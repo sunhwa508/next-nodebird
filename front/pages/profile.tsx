@@ -6,7 +6,7 @@ const Profile = () => {
         <>
             <Head>
                 <meta charSet="utf-8" />
-                <title>NodeBird</title>
+                <title>내 프로필 | NodeBird</title>
             </Head>
             <AppLayout> 내 프로필 </AppLayout>
         </>
