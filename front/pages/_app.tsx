@@ -1,5 +1,6 @@
 import 'antd/dist/antd.css'
 import Head from 'next/head'
+
 interface props {
     Component: React.ElementType
 }

@@ -5,11 +5,11 @@ interface IData {
     nickname: String
 };
 
-interface props {
+interface Props {
     header: String,
     data: IData[],
 }
-const FollowList = ({ header, data }: props) => {
+const FollowList = ({ header, data }: Props) => {
     return (
         <List style={{ marginBottom: 20 }}
             grid={{ gutter: 4, xs: 2, md: 2 }}

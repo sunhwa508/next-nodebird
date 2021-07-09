@@ -1,30 +1,23 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useMemo, useCallback } from 'react';
 import { Form, Input, Button } from 'antd';
 import Link from 'next/link'
 import styled from 'styled-components'
-interface props {
+import useInput from '../hooks/useInput'
+
+interface Props {
     setIsLoggedIn: (isLoggedIn: boolean) => void;
 }
 
 const FormWrapper = styled(Form)`
     padding: 10px;
 `;
-const LoginForm = ({ setIsLoggedIn }: props) => {
-    const [id, setId] = useState('');
-    const [password, setPassword] = useState('');
+const LoginForm = ({ setIsLoggedIn }: Props) => {
+    const [id, onChangeId] = useInput('');
+    const [password, onChangePassword] = useInput('');
+
     const style = useMemo(() => ({ marginTop: 10 }), [])
 
-    const onChangeId = useCallback((e) => {
-        setId(e.target.value);
-    }, [])
-
-
-    const onChangePassword = useCallback((e) => {
-        setPassword(e.target.value);
-    }, [])
-
     const onSubmitForm = useCallback(() => {
-        console.log(id, password);
         setIsLoggedIn(true);
     }, [id, password])
 
