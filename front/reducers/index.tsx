@@ -1,7 +1,20 @@
 import { Action } from '../type/index'
 import { HYDRATE } from 'next-redux-wrapper';
 
-const initialState = {
+export interface InitialStateProps {
+    user: {
+        isLoggedIn: boolean,
+        user: null | {},
+        signUpData: {},
+        loginData: {}
+    },
+    post: {
+        mainPosts: []
+    }
+}
+
+
+const initialState: InitialStateProps = {
     user: {
         isLoggedIn: false,
         user: null,
@@ -13,6 +26,7 @@ const initialState = {
     }
 };
 
+// action creator
 export const loginAction = (data: { id: string, password: string }) => {
     return {
         type: 'LOG_IN',
@@ -25,16 +39,6 @@ export const logoutAction = () => {
         type: 'LOG_OUT',
     }
 }
-
-// action creator
-const changeNickname = (data: string) => {
-    return {
-        type: 'CHANGE_NICKNAME',
-        data,
-    }
-}
-
-changeNickname('somi')
 
 // (이전상태, 액션) => (변경된)다음상태
 const rootReducer: any = (state = initialState, action: Action) => {
