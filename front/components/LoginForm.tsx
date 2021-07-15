@@ -4,7 +4,7 @@ import Link from 'next/link'
 import styled from 'styled-components'
 import useInput from '../hooks/useInput'
 import { useDispatch } from 'react-redux';
-import { loginAction } from '../reducers';
+import { loginAction } from '../reducers/user';
 
 const FormWrapper = styled(Form)`
     padding: 10px;
@@ -18,7 +18,7 @@ const LoginForm = () => {
     const style = useMemo(() => ({ marginTop: 10 }), [])
 
     const onSubmitForm = useCallback(() => {
-      dispatch(loginAction({id, password}))
+        dispatch(loginAction({ id, password }))
     }, [id, password])
 
     return (
