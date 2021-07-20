@@ -7,11 +7,41 @@ export interface InitialPostProps {
             nickname: string,
         },
         content: string,
-        Images: Array<object>
-        Comments: Array<object>
+        Images: Array<{ src: string }>
+        Comments: Array<{
+            User: {
+                nickname: string,
+            },
+            content: string
+        }>,
     }],
     imagePaths: [],
     postAdded: boolean,
+}
+
+export interface CommentsProps {
+    User: {
+        nickname: string;
+    };
+    content: string;
+}
+
+export interface InitialPostElementProps {
+    post: {
+        id: number,
+        User: {
+            id: number,
+            nickname: string,
+        },
+        content: string,
+        Images: Array<{ src: string }>
+        Comments: Array<{
+            User: {
+                nickname: string,
+            },
+            content: string
+        }>,
+    }
 }
 
 // 1. 데이터 구성
@@ -38,7 +68,7 @@ const initialPostState: InitialPostProps = {
             },
         ],
         Comments: [{
-            user: {
+            User: {
                 nickname: 'nero'
             },
             content: ' 우와 개정판이 나왓군요'

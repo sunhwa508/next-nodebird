@@ -19,6 +19,7 @@ const initialUserState: InitialUserProps = {
     loginData: {},
 };
 
+
 // action creator
 export const loginAction = (data: { id: string, password: string }) => {
     return {

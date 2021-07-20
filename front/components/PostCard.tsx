@@ -1,34 +1,34 @@
-import { EllipsisOutlined, HeartOutlined, MessageOutlined, RetweetOutlined } from "@ant-design/icons"
-import { Card, Popover, Button } from 'antd'
+import { useState, useCallback } from 'react'
+import { EllipsisOutlined, MessageOutlined, RetweetOutlined, HeartTwoTone } from "@ant-design/icons"
+import { Card, Popover, Button, List, Comment } from 'antd'
 import Avatar from "antd/lib/avatar/avatar";
 import { useSelector } from "react-redux"
 import { rootType } from '../reducers';
 import PostImages from './PostImages'
-interface Props {
-    post: {
-        id: number,
-        User: {
-            id: number,
-            nickname: string,
-        },
-        content: string,
-        createAt: object,
-        Comments: [],
-        Images: [],
-    }
-};
+import { InitialPostElementProps, CommentsProps } from '../reducers/post';
+import CommentForm from './CommentForm'
 
-const PostCard = ({ post }: Props) => {
-    console.log("post", post)
+
+const PostCard = ({ post }: InitialPostElementProps) => {
+    const [liked, useLiked] = useState(false);
+    const [commentFormOpened, setCommentFormOpened] = useState(false);
     const id = useSelector((state: rootType) => state.user.me?.id);
+
+    const onToggleLike = useCallback(() => {
+        useLiked((prev) => !prev)
+    }, []);
+    const onToggleComment = useCallback(() => {
+        setCommentFormOpened((prev) => !prev)
+    }, []);
 
     return (
         <div>
             <Card cover={post.Images[0] && <PostImages images={post.Images} />}
                 actions={[
                     <RetweetOutlined />,
-                    <HeartOutlined />,
-                    <MessageOutlined />,
+                    liked ?
+                        <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onToggleLike} /> : <HeartTwoTone key="heart" onClick={onToggleLike} />,
+                    <MessageOutlined key="comment" onClick={onToggleComment} />,
                     <Popover key="more" content={(
                         <Button.Group>
                             {id && post.User.id === id ? (
@@ -43,10 +43,27 @@ const PostCard = ({ post }: Props) => {
                     </Popover>
                 ]}
             >
-                <Card.Meta avatar={<Avatar>{post.User.nickname}</Avatar>}
+                <Card.Meta avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
                     title={post.User.nickname} description={post.content} />
             </Card>
-        </div>
+            {commentFormOpened && (
+                <div>
+                    <CommentForm post={post} />
+                    <List header={`${post.Comments.length}개의 댓글`}
+                        itemLayout="horizontal"
+                        dataSource={post.Comments}
+                        renderItem={(item: CommentsProps) => (
+                            <li>
+                                <Comment
+                                    author={item.User.nickname}
+                                    content={item.content}
+                                    avatar={<Avatar>{item.User.nickname[0]}</Avatar>}>
+                                </Comment>
+                            </li>
+                        )} />
+                </div>
+            )}
+        </div >
     )
 }
 

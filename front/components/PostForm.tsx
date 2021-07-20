@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import styled from 'styled-components';
 import { rootType } from '../reducers';
 import { addPost } from '../reducers/post'
+
 const StyledForm = styled(Form)`
     margin: '10px 0 20px';
 `
@@ -15,6 +16,7 @@ const PostForm = () => {
     const { imagePaths } = useSelector((state: rootType) => state.post);
     // Ref 실제 dom 에 접근하기 위해 사용된다.
     const imageInput = useRef()
+
     const onClickImageUpload = useCallback(() => {
         imageInput.current.click()
     }, [imageInput.current])
