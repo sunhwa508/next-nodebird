@@ -6,8 +6,8 @@ import PostCard from '../components/PostCard'
 
 const Home = () => {
     const { isLoggedIn } = useSelector((state: rootType) => state.user);
-    console.log("isLoggedIn", isLoggedIn)
-    const { mainPosts } = useSelector((state: rootType) => state.post)
+    const { mainPosts } = useSelector((state: rootType) => state.post);
+
     return (
         <AppLayout>
             {isLoggedIn && <PostForm />}

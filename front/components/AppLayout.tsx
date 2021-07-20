@@ -6,6 +6,7 @@ import LoginForm from './LoginForm'
 import styled from 'styled-components'
 import { useSelector } from 'react-redux'
 import { InitialUserProps } from '../reducers/user'
+import { rootType } from '../reducers'
 
 const SearchInput = styled(Input.Search)`
     vertical-align: middle;
@@ -17,7 +18,7 @@ interface Props {
 
 
 const AppLayout = ({ children }: Props) => {
-    const isLoggedIn = useSelector((state: InitialUserProps) => state.isLoggedIn)
+    const { isLoggedIn } = useSelector((state: rootType) => state.user)
 
     return (
         <div>
