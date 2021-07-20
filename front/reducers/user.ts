@@ -1,14 +1,20 @@
 import { AnyAction } from 'redux'
 export interface InitialUserProps {
     isLoggedIn: boolean,
-    user: null | {},
+    me: null | {
+        id: number,
+        nickname: string,
+    },
     signUpData: {},
     loginData: {}
 }
 
 const initialUserState: InitialUserProps = {
     isLoggedIn: false,
-    user: null,
+    me: {
+        id: 1,
+        nickname: 'sunhwa',
+    },
     signUpData: {},
     loginData: {},
 };
@@ -33,13 +39,13 @@ const reducer = (state = initialUserState, action: AnyAction) => {
             return {
                 ...state,
                 isLoggedIn: true,
-                user: action.payload
+                me: action.payload
             };
         case 'LOG_OUT':
             return {
                 ...state,
                 isLoggedIn: false,
-                user: null,
+                me: null,
             };
         default:
             return state;

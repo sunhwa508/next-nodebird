@@ -2,7 +2,10 @@ import { AnyAction } from 'redux'
 export interface InitialPostProps {
     mainPosts: [{
         id: number,
-        User: {},
+        User: {
+            id: number,
+            nickname: string,
+        },
         content: string,
         Images: Array<object>
         Comments: Array<object>
@@ -63,7 +66,11 @@ const dummyPost = {
         id: 1,
         nickname: '제로초',
     },
-    Images: [],
+    Images: [
+        {
+            src: 'https://www.google.com/imgres?imgurl=https%3A%2F%2Ffunshop.akamaized.net%2Fproducts%2F0000055079%2Fvs_image800.jpg&imgrefurl=https%3A%2F%2Fm.funshop.co.kr%2Fgoods%2Fdetail%2F55079&tbnid=kqT8Aui_rJsrgM&vet=12ahUKEwj91I_zseTxAhWUDN4KHbrzBpwQMygCegUIARDIAQ..i&docid=6g21QOZOCIOwgM&w=800&h=800&q=%EB%AA%AC%EC%8A%A4%ED%84%B0%EC%A3%BC%EC%8B%9D%ED%9A%8C%EC%82%AC&ved=2ahUKEwj91I_zseTxAhWUDN4KHbrzBpwQMygCegUIARDIAQ'
+        },
+    ],
     Comments: [],
 }
 

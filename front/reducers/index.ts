@@ -12,7 +12,7 @@ import post, { InitialPostProps } from './post'
 
 export interface rootType {
     user: InitialUserProps,
-    post: InitialPostProps
+    post: InitialPostProps,
 }
 // (이전상태, 액션) => (변경된)다음상태
 const rootReducer = combineReducers({
