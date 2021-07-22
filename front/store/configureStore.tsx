@@ -2,7 +2,9 @@ import { createWrapper } from 'next-redux-wrapper';
 import { applyMiddleware, compose, createStore, AnyAction, Dispatch } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import reducer from '../reducers/index'
-import thunkMiddleware, { ThunkMiddleware } from 'redux-thunk';
+import createSagaMiddleware from 'redux-saga'
+
+import rootSaga from '../sagas';
 
 interface Props {
     dispatch: Dispatch;
@@ -15,14 +17,14 @@ const loggerMiddleware = ({ dispatch, getState }: Props) => (next: any) => (acti
 }
 
 const configureStore = () => {
-    const middlewares:
-        [ThunkMiddleware<{}, AnyAction, undefined> & { withExtraArgument<E>(extraArgument: E): ThunkMiddleware<{}, AnyAction, E>; }, ({ dispatch, getState }: Props) => (next: any) => (action: AnyAction) => any]
-        = [thunkMiddleware, loggerMiddleware];
+    const sagaMiddleware = createSagaMiddleware();
+    const middlewares: any = [sagaMiddleware, loggerMiddleware]
     // composeWithDevTools -> 액션히스토리가 쌓이면 성능에 문제가 됨으로 개발용일때만 동작 하게 한다.
     const enhancer = process.env.NODE_ENV === 'production'
         ? compose(applyMiddleware(...middlewares))
         : composeWithDevTools(applyMiddleware(...middlewares))
     const store = createStore(reducer, enhancer);
+    store.sagaTask = sagaMiddleware.run(rootSaga);
     return store
 }
 

@@ -150,3 +150,62 @@ debounced (take latest) 클릭이 여러번 들어왔을때 가장 최신것만 
 **디도스**
 
 기본 데이터 리프레시 주기와 서버의 장애시 재시도 주기가 고정된 값을 갖는 경우 둘이 겹치는 상황에서 트래픽이 배가 되어 앱 스스로 자신의 서비스에 DDoS 공격과 유사한 상황을 야기하고 이러한 좋지않은 주기가 반복되는 문제
+
+> 미들웨어 saga 맛보기 
+generator 은 yield 가 있는점에서 멈춘다.
+중단하고 싶은 점에 yield를 넣고 {done:true} 가 될떄까지 next() 를 이용해 호출 할 수 있다.
+
+```javascript
+const gen = function* () {
+    console.log(1)
+    yield;
+    console.log(2)
+    yield;
+    console.log(3)
+    yield 4;
+}
+
+> const generator = gen();
+> generator // {<suspanded>}
+> generator.next() //1 {value:undefined, done: false}
+> generator.next() //2 {value:undefined, done: false}
+> generator.next() //3 {value:undefined, done: false}
+> generator.next() // {value:undefined, done: true}
+
+```
+
+절대멈추지 않는 generator
+```javascript
+const gen = function*() {
+    while (true){
+        yield "무한" ;
+    }
+}
+
+//기존함수에선 무한반복 될 수있는 로직이지만 generator 에선 yield 에서 잠시 중단된다.
+```
+
+
+## call vs fork
+
+fork vs call 차이점 
+둘다 generator 함수를 불러오는 기능을 하기는 하나
+fork 는 non-blocking call 은 blocking
+
+```javascript
+function* main() {
+    yield fork(someSaga);
+    console.log('this won't wait for the completion of someSaga');
+}
+
+function* main() {
+    yield call(someSaga);
+    console.log('this will wait for the completion of someSaga');
+}
+```
+
+## bugs 해결
+![image](https://user-images.githubusercontent.com/61695175/126586343-bfc242f4-b038-4f78-9b52-392a66d9de4c.png)
+
+ typescript를 사용하는 경우 useRef의 초기값 설정이 되어 있지 않으면 다음과 같은 에러가 발생한다.  
+ const imageInput = useRef<HTMLInputElement>(null);
