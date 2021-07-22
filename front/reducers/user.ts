@@ -20,16 +20,43 @@ const initialUserState: InitialUserProps = {
 };
 
 // action creator
-export const loginAction = (data: { id: string, password: string }) => {
+export const loginRequestAction = (data: { id: string, password: string }) => {
     return {
-        type: 'LOG_IN',
+        type: 'LOG_IN_REQUEST',
         data,
     }
 }
 
-export const logoutAction = () => {
+export const loginSuccessAction = (data: { id: string, password: string }) => {
     return {
-        type: 'LOG_OUT',
+        type: 'LOG_IN_SUCCESS',
+        data,
+    }
+}
+
+export const loginFailureAction = (data: { id: string, password: string }) => {
+    return {
+        type: 'LOG_IN_FAILURE',
+        data,
+    }
+}
+
+
+export const logoutRequestAction = () => {
+    return {
+        type: 'LOG_OUT_REQUEST',
+    }
+}
+
+export const logoutSuccessAction = () => {
+    return {
+        type: 'LOG_OUT_SUCCESS',
+    }
+}
+
+export const logoutFailureAction = () => {
+    return {
+        type: 'LOG_OUT_FAILURE',
     }
 }
 
