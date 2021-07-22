@@ -7,7 +7,7 @@ import { rootType } from '../reducers';
 import PostImages from './PostImages'
 import { InitialPostElementProps, CommentsProps } from '../reducers/post';
 import CommentForm from './CommentForm'
-
+import PostCardContent from './PostCardContent'
 
 const PostCard = ({ post }: InitialPostElementProps) => {
     const [liked, useLiked] = useState(false);
@@ -43,8 +43,10 @@ const PostCard = ({ post }: InitialPostElementProps) => {
                     </Popover>
                 ]}
             >
-                <Card.Meta avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-                    title={post.User.nickname} description={post.content} />
+                <Card.Meta
+                    avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+                    title={post.User.nickname}
+                    description={<PostCardContent postData={post.content} />} />
             </Card>
             {commentFormOpened && (
                 <div>

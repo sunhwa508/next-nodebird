@@ -3,9 +3,8 @@ import Link from 'next/link'
 import { Menu, Input, Row, Col } from 'antd'
 import UserProfile from './UserProfile'
 import LoginForm from './LoginForm'
-import styled from 'styled-components'
+import styled, { createGlobalStyle } from 'styled-components'
 import { useSelector } from 'react-redux'
-import { InitialUserProps } from '../reducers/user'
 import { rootType } from '../reducers'
 
 const SearchInput = styled(Input.Search)`
@@ -15,13 +14,25 @@ const SearchInput = styled(Input.Search)`
 interface Props {
     children: React.ReactNode;
 };
-
+const Global = createGlobalStyle`
+    .ant-row{
+        margin-right:0 !important;
+        margin-left:0 !important;
+    }
+    .ant-col:first-child{
+        padding-left:0 !important;
+    }
+    .and-col:last-child{
+        padding-right:0 !important;
+    }
+`;
 
 const AppLayout = ({ children }: Props) => {
     const { isLoggedIn } = useSelector((state: rootType) => state.user)
 
     return (
         <div>
+            <Global />
             <Menu mode="horizontal">
                 <Menu.Item key="1">
                     <Link href="/"><a>노드버드</a></Link>
