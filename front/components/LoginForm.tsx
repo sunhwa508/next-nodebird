@@ -3,15 +3,17 @@ import { Form, Input, Button } from 'antd';
 import Link from 'next/link'
 import styled from 'styled-components'
 import useInput from '../hooks/useInput'
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { loginRequestAction } from '../reducers/user';
+import { rootType } from '../reducers';
+
 
 const FormWrapper = styled(Form)`
     padding: 10px;
 `;
 const LoginForm = () => {
     const dispatch = useDispatch()
-
+    const { isLoggingIn } = useSelector((state: rootType) => state.user)
     const [id, onChangeId] = useInput('');
     const [password, onChangePassword] = useInput('');
 

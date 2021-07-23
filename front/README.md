@@ -171,7 +171,7 @@ const gen = function* () {
 > generator.next() //2 {value:undefined, done: false}
 > generator.next() //3 {value:undefined, done: false}
 > generator.next() // {value:undefined, done: true}
-
+// yield: await 이랑 비슷한 역할을 할 수 있다고 생각할 수 있다. 
 ```
 
 절대멈추지 않는 generator
@@ -189,17 +189,19 @@ const gen = function*() {
 ## call vs fork
 
 fork vs call 차이점 
+fork : 비동기 함수 호출
+call : 동기 함수 호출 
 둘다 generator 함수를 불러오는 기능을 하기는 하나
 fork 는 non-blocking call 은 blocking
 
 ```javascript
 function* main() {
-    yield fork(someSaga);
-    console.log('this won't wait for the completion of someSaga');
+    yield fork(someSaga); // 기다리지 않고 바로 다음 코드로 넘어간다. 
+    console.log('this wont wait for the completion of someSaga');
 }
 
 function* main() {
-    yield call(someSaga);
+    yield call(someSaga); //이값을 받은 후 다음 코드로 넘어간다.
     console.log('this will wait for the completion of someSaga');
 }
 ```
