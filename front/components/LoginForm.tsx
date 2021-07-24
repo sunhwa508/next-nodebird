@@ -13,7 +13,7 @@ const FormWrapper = styled(Form)`
 `;
 const LoginForm = () => {
     const dispatch = useDispatch()
-    const { isLoggingIn } = useSelector((state: rootType) => state.user)
+    const { logInLoading } = useSelector((state: rootType) => state.user)
     const [id, onChangeId] = useInput('');
     const [password, onChangePassword] = useInput('');
 

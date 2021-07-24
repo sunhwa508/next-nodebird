@@ -29,8 +29,4 @@ const rootReducer = combineReducers({
     post,
 });
 
-
-
-
-
 export default rootReducer;
