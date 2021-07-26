@@ -28,7 +28,7 @@ function* logIn(action: AnyAction) {
     }
 }
 
-function* logOut(action: AnyAction) {
+function* logOut() {
     try {
         // const result = yield call(logInAPI, action.data);
         yield delay(1000);
@@ -49,13 +49,12 @@ function signUpAPI(data: { id: string, password: string }): Promise<AxiosRespons
     return axios.post('/api/signup', data)
 }
 
-function* signUp(action: AnyAction) {
+function* signUp() {
     try {
         // const result = yield call(signUpAPI, action.data);
         yield delay(1000);
         yield put({
             type: SIGN_UP_SUCCESS,
-            data: action.data
         });
     }
     catch (error) {

@@ -206,6 +206,22 @@ function* main() {
 }
 ```
 
+## takelatest vs throttle
+throttle 시간에 제한을 두어 그 시간 내에서는 딱 한번만 요청을 보냄
+takeLatest 는 debounce 만 막아줌 ( 연속 클릭시 한번 요청)
+```javascript
+function* watchLogOut(){
+    yield takeLatest('LOG_OUT_REQUEST', logOut);
+}
+
+function* watchLogOut(){
+    yield throttle('LOG_OUT_REQUEST', logOut, 2000);
+}
+```
+
+> throttle : 마지막 함수가 호출된 후 일정 시간이 지나기 전에 다시 호출되지 않도록 하는 것
+> debounced: 연이어 호출되는 함수들 중 마지막 함수만 호출하도록 하는 것
+
 ## bugs 해결
 ![image](https://user-images.githubusercontent.com/61695175/126586343-bfc242f4-b038-4f78-9b52-392a66d9de4c.png)
 

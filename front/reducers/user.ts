@@ -1,5 +1,11 @@
 import { AnyAction } from 'redux'
 export interface InitialUserProps {
+    followLoading: boolean,
+    followDone: boolean,
+    followError: null | boolean,
+    unfollowLoading: boolean,
+    unfollowDone: boolean,
+    unfollowError: boolean | null,
     logInDone: boolean,
     logInError: boolean | null,
     logInLoading: boolean,
@@ -12,25 +18,30 @@ export interface InitialUserProps {
     me: null | {
         id: number,
         nickname: string,
+        Followings: Array<{ nickname: string }>
+        Followers: Array<{ nickname: string }>
     },
     signUpData: {},
-    loginData: {}
+    loginData: {},
 }
 
 export const initialState: InitialUserProps = {
+    followLoading: false, // 팔로우 시도중
+    followDone: false,
+    followError: null,
+    unfollowLoading: false, // 언팔로우 시도중
+    unfollowDone: false,
+    unfollowError: null,
+    logInLoading: false, // 로그인 시도중
     logInDone: false,
     logInError: null,
-    logInLoading: false, //로그인시도중
+    logOutLoading: false, // 로그아웃 시도중
     logOutDone: false,
     logOutError: null,
-    logOutLoading: false, //로그아웃시도중
+    signUpLoading: false, // 회원가입 시도중
     signUpDone: false,
     signUpError: null,
-    signUpLoading: false, //회원가입 시도
-    me: {
-        id: 1,
-        nickname: 'sunhwa',
-    },
+    me: null,
     signUpData: {},
     loginData: {},
 };
@@ -40,8 +51,8 @@ const dummyUser = (data: { nickname: string, id: number }) => ({
     nickname: '선화',
     id: 1,
     posts: [],
-    Following: [],
-    Follower: [],
+    Followings: [],
+    Followers: [],
 })
 
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST'
@@ -65,21 +76,21 @@ export const UN_FOLLOW_SUCCESS = 'UN_FOLLOW_SUCCESS'
 export const UN_FOLLOW_FAILURE = 'UN_FOLLOW_FAILURE'
 
 // action creator
-export const loginRequestAction = (data: { id: string, password: string }) => {
+export const loginRequestAction = (data: { email: string, password: string }) => {
     return {
         type: LOG_IN_REQUEST,
         data,
     }
 }
 
-export const loginSuccessAction = (data: { id: string, password: string }) => {
+export const loginSuccessAction = (data: { email: string, password: string }) => {
     return {
         type: LOG_IN_SUCCESS,
         data,
     }
 }
 
-export const loginFailureAction = (data: { id: string, password: string }) => {
+export const loginFailureAction = (data: { email: string, password: string }) => {
     return {
         type: LOG_IN_FAILURE,
         data,
@@ -149,41 +160,41 @@ const reducer = (state = initialState, action: AnyAction) => {
         case LOG_OUT_REQUEST:
             return {
                 ...state,
-                logOutloading: true,
+                logOutLoading: true,
                 logOutDone: false,
                 logOutError: null,
             };
         case LOG_OUT_SUCCESS:
             return {
                 ...state,
-                logOutloading: false,
+                logOutLoading: false,
                 logOutDone: true,
                 logInDone: false,
+                me: null,
             };
         case LOG_OUT_FAILURE:
             return {
                 ...state,
-                logOutloading: false,
+                logOutLoading: false,
                 logOutError: action.error
             };
-
         case SIGN_UP_REQUEST:
             return {
                 ...state,
-                signUploading: true,
+                signUpLoading: true,
                 signUpDone: false,
                 signUpError: null,
             };
         case SIGN_UP_SUCCESS:
             return {
                 ...state,
-                signUploading: false,
+                signUpLoading: false,
                 signUpDone: true,
             };
         case SIGN_UP_FAILURE:
             return {
                 ...state,
-                signUploading: false,
+                signUpLoading: false,
                 signUpError: action.error
             };
         default:

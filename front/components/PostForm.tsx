@@ -1,33 +1,36 @@
-import React, { useRef, useCallback, useState, useEffect } from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 import { Form, Input, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { addPost } from '../reducers/post';
 import { rootType } from '../reducers';
+import useInput from '../hooks/useInput'
 
 const PostForm = () => {
-    const { imagePaths, postAdded } = useSelector((state: rootType) => state.post);
-    const [text, setText] = useState('');
+    const { imagePaths, addPostDone } = useSelector((state: rootType) => state.post);
+    const [text, onChangeText, setText] = useInput('');
     const dispatch = useDispatch();
     const imageInput = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (addPostDone) {
+            setText('');
+        }
+    }, [addPostDone])
 
     const onClickImageUpload = useCallback(() => {
         imageInput.current?.click();
     }, [imageInput.current]);
 
     useEffect(() => {
-        if (postAdded) {
+        if (addPostDone) {
             setText('');
         }
-    }, [postAdded]);
-
-    const onChangeText = useCallback((e) => {
-        setText(e.target.value);
-    }, []);
+    }, [addPostDone]);
 
     const onSubmit = useCallback(() => {
         dispatch(addPost);
-    }, []);
+    }, [text]);
 
     return (
         <Form style={{ margin: '10px 0 20px' }} encType="multipart/form-data" onFinish={onSubmit}>

@@ -38,6 +38,9 @@ export interface InitialPostProps {
     addPostLoading: boolean,
     addPostDone: boolean,
     addPostError: boolean | null,
+    addCommentLoading: boolean,
+    addCommentDone: boolean,
+    addCommentError: boolean | null,
 }
 
 export interface CommentsProps {
@@ -87,6 +90,9 @@ const initialPostState: InitialPostProps = {
     addPostLoading: false,
     addPostDone: false,
     addPostError: null,
+    addCommentLoading: false,
+    addCommentDone: false,
+    addCommentError: null,
 };
 
 export const ADD_POST_REQUEST = 'ADD_POST_REQUEST';

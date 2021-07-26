@@ -28,7 +28,7 @@ const Global = createGlobalStyle`
 `;
 
 const AppLayout = ({ children }: Props) => {
-    const { logInDone } = useSelector((state: rootType) => state.user)
+    const { me } = useSelector((state: rootType) => state.user)
 
     return (
         <div>
@@ -50,7 +50,7 @@ const AppLayout = ({ children }: Props) => {
             {/* gutter => column 사이의 간격 */}
             <Row gutter={8}>
                 <Col xs={24} md={6}>
-                    {logInDone ? <UserProfile /> : <LoginForm />}
+                    {me ? <UserProfile /> : <LoginForm />}
                 </Col>
                 <Col xs={24} md={12}>
                     {children}
