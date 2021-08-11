@@ -1,5 +1,5 @@
 import { Form, Input } from 'antd';
-import React, { useCallback, useEffect, useMemo } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { InitialPostElementProps } from '../reducers/post';
 import useInput from '../hooks/useInput';
 import { Button } from 'antd';
@@ -18,7 +18,6 @@ const CommentForm = ({ post }: InitialPostElementProps) => {
   }, [addCommentDone]);
 
   const onSubmitComment = useCallback(() => {
-    console.log('click');
     dispatch({
       type: ADD_COMMENT_REQUEST,
       data: { content: commentText, postId: post.id, userId: id },

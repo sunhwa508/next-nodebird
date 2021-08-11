@@ -12,6 +12,9 @@ export interface InitialUserProps {
   me: null | {
     id: number;
     nickname: string;
+    Posts: Array<{ id: number }>;
+    Followings: Array<object>;
+    Followers: Array<object>;
   };
   signUpData: {};
   loginData: {};
@@ -36,9 +39,9 @@ const dummyUser = (data: { nickname: string; id: number }) => ({
   ...data,
   nickname: '선화',
   id: 1,
-  posts: [],
-  Following: [],
-  Follower: [],
+  Posts: [{ id: 1 }],
+  Followings: [{ nickname: '선화초' }, { nickname: 'chanhoLee' }, { nickname: 'nenuzeal' }],
+  Followers: [{ nickname: '선화초' }, { nickname: 'chanhoLee' }, { nickname: 'nenuzeal' }],
 });
 
 export const LOG_IN_REQUEST = 'LOG_IN_REQUEST';
@@ -60,6 +63,9 @@ export const FOLLOW_FAILURE = 'FOLLOW_FAILURE';
 export const UN_FOLLOW_REQUEST = 'UN_FOLLOW_REQUEST';
 export const UN_FOLLOW_SUCCESS = 'UN_FOLLOW_SUCCESS';
 export const UN_FOLLOW_FAILURE = 'UN_FOLLOW_FAILURE';
+
+export const ADD_POST_TO_ME = 'ADD_POST_TO_ME';
+export const REMOVE_POST_OF_ME = 'REMOVE_POST_OF_ME';
 
 // action creator
 export const loginRequestAction = (data: { id: string; password: string }) => {
@@ -164,7 +170,6 @@ const reducer = (state = initialState, action: AnyAction) => {
         logOutloading: false,
         logOutError: action.error,
       };
-
     case SIGN_UP_REQUEST:
       return {
         ...state,
@@ -183,6 +188,22 @@ const reducer = (state = initialState, action: AnyAction) => {
         ...state,
         signUploading: false,
         signUpError: action.error,
+      };
+    case ADD_POST_TO_ME:
+      return {
+        ...state,
+        me: {
+          ...state.me,
+          Posts: [{ id: action.data }, ...state.me!.Posts],
+        },
+      };
+    case REMOVE_POST_OF_ME:
+      return {
+        ...state,
+        me: {
+          ...state.me,
+          Posts: state.me?.Posts.filter((v) => v.id !== action.data),
+        },
       };
     default:
       return state;
