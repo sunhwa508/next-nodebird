@@ -1,6 +1,7 @@
 import produce from "immer";
 import { AnyAction } from "redux";
 import shortId from "shortid";
+import faker from "faker";
 
 export interface InitialPostElementProps {
   post: {
@@ -13,6 +14,7 @@ export interface InitialPostElementProps {
     Images: Array<{ src: string }>;
     Comments: Array<{
       User: {
+        id: string;
         nickname: string;
       };
       content: string;
@@ -35,8 +37,8 @@ export interface InitialPostProps {
       content: string;
       Images?: Array<{ src: string; id: string }>;
       Comments: Array<{
-        id: string;
         User: {
+          id: string;
           nickname: string;
         };
         content: string;
@@ -72,37 +74,37 @@ const initialPostState: InitialPostProps = {
       id: 1,
       User: {
         id: 1,
-        nickname: "선화초",
+        nickname: faker.name.findName(),
       },
       content: "첫 번째 게시글 #해시태그 #익스프레스",
       Images: [
         {
           id: shortId.generate(),
-          src: "http://gdimg.gmarket.co.kr/1528813522/still/600?ver=1543595810",
+          src: faker.image.image(),
         },
         {
           id: shortId.generate(),
-          src: "http://gdimg.gmarket.co.kr/1528813522/still/600?ver=1543595810",
+          src: faker.image.image(),
         },
         {
           id: shortId.generate(),
-          src: "http://gdimg.gmarket.co.kr/1528813522/still/600?ver=1543595810",
+          src: faker.image.image(),
         },
       ],
       Comments: [
         {
-          id: shortId.generate(),
           User: {
-            nickname: "nero",
+            id: shortId.generate(),
+            nickname: faker.name.findName(),
           },
-          content: " 우와 개정판이 나왓군요",
+          content: faker.lorem.sentence(),
         },
         {
-          id: shortId.generate(),
           User: {
-            nickname: "hero",
+            id: shortId.generate(),
+            nickname: faker.name.findName(),
           },
-          content: "얼른 사고싶어요!",
+          content: faker.lorem.sentence(),
         },
       ],
     },
@@ -169,11 +171,11 @@ const dummyComment = (data: string) => ({
     nickname: "제로초",
   },
 });
+
 // 이전상태를 액션을 통해 다음 상태로 만들어 내는 함수 (단, 불변성은 비키면서)
 const reducer = (state = initialPostState, action: AnyAction) => {
   return produce<any>(state, draft => {
     //state 이름이 draft로 바뀐다
-
     switch (action.type) {
       case ADD_POST_REQUEST:
         draft.addPostLoading = true;
@@ -200,39 +202,38 @@ const reducer = (state = initialPostState, action: AnyAction) => {
         draft.removePostDone = true;
         break;
       case REMOVE_POST_FAILURE:
-        return {
-          removePostLoading: false,
-          removePostError: action.error,
-        };
-
+        draft.removePostLoading = false;
+        draft.removePostError = action.error;
+        break;
       case ADD_COMMENT_REQUEST:
-        return {
-          ...state,
-          addCommentLoading: true,
-          addCommentError: null,
-          addCommentDone: false,
-        };
+        draft.addCommentLoading = true;
+        draft.addCommentError = null;
+        draft.addCommentDone = false;
+        break;
       case ADD_COMMENT_SUCCESS: {
-        const postIndex = state.mainPosts.findIndex(v => v.id === action.data.postId);
-        const post = { ...state.mainPosts[postIndex] };
-        post.Comments = [dummyComment(action.data.content), ...post.Comments];
-        const mainPosts = [...state.mainPosts];
-        mainPosts[postIndex] = post;
-        return {
-          ...state,
-          mainPosts,
-          addCommentLoading: false,
-          addCommentDone: true,
-        };
+        const post = draft.mainPosts.find((v: any) => v.id === action.data.postId);
+        post.Comments.unshift(dummyComment(action.data.content));
+        draft.addCommentLoading = false;
+        draft.addCommentDone = true;
+        break;
+        // const postIndex = state.mainPosts.findIndex(v => v.id === action.data.postId);
+        // const post = { ...state.mainPosts[postIndex] };
+        // post.Comments = [dummyComment(action.data.content), ...post.Comments];
+        // const mainPosts = [...state.mainPosts];
+        // mainPosts[postIndex] = post;
+        // return {
+        //   ...state,
+        //   mainPosts,
+        //   addCommentLoading: false,
+        //   addCommentDone: true,
+        // };
       }
       case ADD_COMMENT_FAILURE:
-        return {
-          addCommentLoading: false,
-          addCommentError: action.error,
-        };
-
+        draft.addCommentLoading = false;
+        draft.addCommentError = action.error;
+        break;
       default:
-        return state;
+        break;
     }
   });
 };

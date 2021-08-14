@@ -1,24 +1,39 @@
-import { useState, useCallback } from 'react';
-import { EllipsisOutlined, MessageOutlined, RetweetOutlined, HeartTwoTone } from '@ant-design/icons';
-import { Card, Popover, Button, List, Comment } from 'antd';
-import Avatar from 'antd/lib/avatar/avatar';
-import { useSelector } from 'react-redux';
-import { rootType } from '../reducers';
-import PostImages from './PostImages';
-import { InitialPostElementProps, CommentsProps } from '../reducers/post';
-import CommentForm from './CommentForm';
-import PostCardContent from './PostCardContent';
+import { useState, useCallback } from "react";
+import {
+  EllipsisOutlined,
+  MessageOutlined,
+  RetweetOutlined,
+  HeartTwoTone,
+} from "@ant-design/icons";
+import { Card, Popover, Button, List, Comment } from "antd";
+import Avatar from "antd/lib/avatar/avatar";
+import { useSelector, useDispatch } from "react-redux";
+import { rootType } from "../reducers";
+import PostImages from "./PostImages";
+import { InitialPostElementProps, CommentsProps, REMOVE_POST_REQUEST } from "../reducers/post";
+import CommentForm from "./CommentForm";
+import PostCardContent from "./PostCardContent";
 
 const PostCard = ({ post }: InitialPostElementProps) => {
   const [liked, useLiked] = useState(false);
+  const { removePostLoading } = useSelector((state: rootType) => state.post);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
   const id = useSelector((state: rootType) => state.user.me?.id);
+  const dispatch = useDispatch();
 
   const onToggleLike = useCallback(() => {
-    useLiked((prev) => !prev);
+    useLiked(prev => !prev);
   }, []);
   const onToggleComment = useCallback(() => {
-    setCommentFormOpened((prev) => !prev);
+    setCommentFormOpened(prev => !prev);
+  }, []);
+  console.log("post'", post);
+
+  const onRemovePost = useCallback(() => {
+    dispatch({
+      type: REMOVE_POST_REQUEST,
+      data: post.id,
+    });
   }, []);
 
   return (
@@ -40,7 +55,7 @@ const PostCard = ({ post }: InitialPostElementProps) => {
                 {id && post.User.id === id ? (
                   <>
                     <Button>수정</Button>
-                    <Button type="primary" danger>
+                    <Button type="primary" loading={removePostLoading} onClick={onRemovePost}>
                       삭제
                     </Button>
                   </>
