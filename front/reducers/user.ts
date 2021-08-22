@@ -1,6 +1,12 @@
 import produce from "immer";
 import { AnyAction } from "redux";
 export interface InitialUserProps {
+  followDone: boolean;
+  followError: boolean | null;
+  followLoading: boolean;
+  unfollowDone: boolean;
+  unfollowError: boolean | null;
+  unfollowLoading: boolean;
   logInDone: boolean;
   logInError: boolean | null;
   logInLoading: boolean;
@@ -22,6 +28,12 @@ export interface InitialUserProps {
 }
 
 export const initialState: InitialUserProps = {
+  followDone: false,
+  followError: null,
+  followLoading: false,
+  unfollowDone: false,
+  unfollowError: null,
+  unfollowLoading: false,
   logInDone: false,
   logInError: null,
   logInLoading: false, //로그인시도중
@@ -132,9 +144,35 @@ export const signUpFailureAction = () => {
 };
 
 const reducer = (state = initialState, action: AnyAction) => {
-  console.log(action)
+  console.log(action);
   return produce<any>(state, draft => {
     switch (action.type) {
+      case UN_FOLLOW_REQUEST:
+        draft.unfollowLoading = true;
+        draft.unfollowError = null;
+        draft.unfollowDone = false;
+        break;
+      case UN_FOLLOW_SUCCESS:
+        draft.unfollowLoading = false;
+        draft.unfollowDone = true;
+        draft.me.Followings = draft.me.Followings.filter((v: { id: string }) => v.id !== action.data);
+        break;
+      case UN_FOLLOW_FAILURE:
+        draft.unfollowLoading = true;
+        draft.unfollowError = action.error;
+      case FOLLOW_REQUEST:
+        draft.followLoading = true;
+        draft.followError = null;
+        draft.followDone = false;
+        break;
+      case FOLLOW_SUCCESS:
+        draft.followLoading = false;
+        draft.followDone = true;
+        draft.me.Followings.push({ id: action.data });
+        break;
+      case FOLLOW_FAILURE:
+        draft.followLoading = true;
+        draft.followError = action.error;
       case LOG_IN_REQUEST:
         draft.logInLoading = true;
         draft.logInError = null;
