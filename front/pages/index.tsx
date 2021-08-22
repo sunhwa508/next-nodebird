@@ -7,16 +7,31 @@ import { useEffect } from "react";
 import { LOAD_POSTS_REQUEST } from "../reducers/post";
 
 const Home = () => {
+  const { me } = useSelector((state: rootType) => state.user);
+  const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector((state: rootType) => state.post);
   const dispatch = useDispatch();
-  useEffect(()=>{
+  useEffect(() => {
     dispatch({
       type: LOAD_POSTS_REQUEST,
     });
-  },[]);
-  
+  }, []);
 
-  const { me } = useSelector((state: rootType) => state.user);
-  const { mainPosts } = useSelector((state: rootType) => state.post);
+  useEffect(() => {
+    function onScroll() {
+      const { clientHeight, scrollHeight } = document.documentElement;
+      if (window.scrollY + clientHeight > scrollHeight - 300) {
+        if (hasMorePosts && !loadPostsLoading) {
+          dispatch({
+            type: LOAD_POSTS_REQUEST,
+          });
+        }
+      }
+    }
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [hasMorePosts, loadPostsLoading]);
 
   return (
     <AppLayout>
