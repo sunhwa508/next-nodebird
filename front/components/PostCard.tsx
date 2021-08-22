@@ -27,9 +27,9 @@ const PostCard = ({ post }: InitialPostElementProps) => {
   const onToggleComment = useCallback(() => {
     setCommentFormOpened(prev => !prev);
   }, []);
-  console.log("post'", post);
 
   const onRemovePost = useCallback(() => {
+    console.log(post.id)
     dispatch({
       type: REMOVE_POST_REQUEST,
       data: post.id,

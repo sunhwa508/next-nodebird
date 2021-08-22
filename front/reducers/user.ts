@@ -132,6 +132,7 @@ export const signUpFailureAction = () => {
 };
 
 const reducer = (state = initialState, action: AnyAction) => {
+  console.log(action)
   return produce<any>(state, draft => {
     switch (action.type) {
       case LOG_IN_REQUEST:
