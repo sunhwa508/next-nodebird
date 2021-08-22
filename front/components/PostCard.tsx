@@ -1,10 +1,5 @@
 import { useState, useCallback } from "react";
-import {
-  EllipsisOutlined,
-  MessageOutlined,
-  RetweetOutlined,
-  HeartTwoTone,
-} from "@ant-design/icons";
+import { EllipsisOutlined, MessageOutlined, RetweetOutlined, HeartTwoTone } from "@ant-design/icons";
 import { Card, Popover, Button, List, Comment } from "antd";
 import Avatar from "antd/lib/avatar/avatar";
 import { useSelector, useDispatch } from "react-redux";
@@ -13,6 +8,7 @@ import PostImages from "./PostImages";
 import { InitialPostElementProps, CommentsProps, REMOVE_POST_REQUEST } from "../reducers/post";
 import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
+import FollowButton from "./FollowButton";
 
 const PostCard = ({ post }: InitialPostElementProps) => {
   const [liked, useLiked] = useState(false);
@@ -29,7 +25,7 @@ const PostCard = ({ post }: InitialPostElementProps) => {
   }, []);
 
   const onRemovePost = useCallback(() => {
-    console.log(post.id)
+    console.log(post.id);
     dispatch({
       type: REMOVE_POST_REQUEST,
       data: post.id,
@@ -68,6 +64,7 @@ const PostCard = ({ post }: InitialPostElementProps) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
+        extra={id && <FollowButton post={post} />}
       >
         <Card.Meta
           avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
