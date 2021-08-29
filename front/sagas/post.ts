@@ -41,6 +41,12 @@ function* loadPosts(action: AnyAction) {
   }
 }
 
+function addPostsAPI(data: rootType): Promise<AxiosResponse<rootType>> {
+  return axios.post("/post", data, {
+    withCredentials: true,
+  });
+}
+
 function* addPost(action: AnyAction) {
   try {
     // const result = yield call(logInAPI, action.data);
