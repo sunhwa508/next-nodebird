@@ -1,9 +1,13 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import AppLayout from '../components/AppLayout'
 import Head from 'next/head'
 import { Form, Input, Checkbox, Button } from 'antd'
 import useInput from '../hooks/useInput'
 import styled from 'styled-components'
+import { SIGN_UP_REQUEST } from '../reducers/user';
+import { useDispatch, useSelector } from 'react-redux';
+import Router from 'next/router'
+import { rootType } from '../reducers';
 
 const ErrorMessage = styled.div`
     color: red;
@@ -12,7 +16,22 @@ const SubmitButton = styled.div`
     margin-top:10px;
 `
 const Signup = () => {
-    const [id, onChangeId] = useInput('');
+    const dispatch = useDispatch();
+    const {signUpLoading, signUpDone, signUpError} = useSelector((state: rootType)=> state.user);
+
+    useEffect(() => {
+        if(signUpDone){
+            Router.push('/')
+        }
+    }, [signUpDone]);
+
+    useEffect(() => {
+        if(signUpError){
+          alert(signUpError);
+        }
+    }, [signUpError]);
+
+    const [email, onChangeEmail] = useInput('');
     const [nickname, onChangeNickname] = useInput('');
 
     const [password, onChangePassword] = useInput('');
@@ -39,7 +58,11 @@ const Signup = () => {
         if (!term) {
             return setTermError(true)
         }
-        console.log(id, nickname, password)
+        dispatch({
+            type:SIGN_UP_REQUEST,
+            data:{email, password, nickname},
+        })
+        console.log(email, nickname, password)
     }, [password, passwordCheck, term])
 
     return (
@@ -50,9 +73,9 @@ const Signup = () => {
             </Head>
             <Form onFinish={onSubmit}>
                 <div>
-                    <label htmlFor="user-id">아이디</label>
+                    <label htmlFor="user-email">이메일</label>
                     <br />
-                    <Input name="user-id" value={id} onChange={onChangeId} required />
+                    <Input name="user-email" value={email} onChange={onChangeEmail} required />
                 </div>
                 <div>
                     <label htmlFor="user-nickname">닉네임</label>
@@ -65,7 +88,7 @@ const Signup = () => {
                     <Input name="user-password" value={password} onChange={onChangePassword} required />
                 </div>
                 <div>
-                    <label htmlFor="user-id">비밀번호체크</label>
+                    <label htmlFor="user-password-check">비밀번호체크</label>
                     <br />
                     <Input name="user-password-check" type="password" value={passwordCheck} onChange={onChangePasswordCheck} required />
                     {passwordError && <ErrorMessage> 비밀번호가 일치하지 않습니다.</ErrorMessage>}
@@ -75,8 +98,8 @@ const Signup = () => {
                     {termError && <ErrorMessage> 약관에 동의 하셔야 합니다! </ErrorMessage>}
                 </div>
                 <SubmitButton>
-                    {/* htmlType="submit" 설정시 form 의 onfinicsh={} 가 호출됩니다. */}
-                    <Button type="primary" htmlType="submit">가입하기</Button>
+                    {/* htmlType="submit" 설정시 form 의 onfinish={} 가 호출됩니다. */}
+                    <Button type="primary" htmlType="submit" loading={signUpLoading}>가입하기</Button>
                 </SubmitButton>
             </Form>
         </AppLayout>

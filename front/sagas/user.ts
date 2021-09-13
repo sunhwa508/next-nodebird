@@ -1,4 +1,4 @@
-import { all, fork, takeLatest, delay, put } from "redux-saga/effects";
+import { all, fork, takeLatest, delay, put, call } from "redux-saga/effects";
 import axios, { AxiosResponse } from "axios";
 import { AnyAction } from "redux";
 import {
@@ -99,19 +99,16 @@ function* logOut(action: AnyAction) {
 }
 
 function signUpAPI(data: { id: string; password: string }): Promise<AxiosResponse<{ id: string; password: string }>> {
-  return axios.post("/api/signup", data);
+  return axios.post("http://localhost:3065/user", data);
 }
 
-function* signUp(action: AnyAction) {
+function* signUp(action: AnyAction):Generator<any> {
   try {
-    // const result = yield call(signUpAPI, action.data);
-    yield delay(1000);
+    const result = yield call(signUpAPI, action.data);
     yield put({
       type: SIGN_UP_SUCCESS,
-      data: action.data,
     });
   } catch (error) {
-    //put = action 을 dispatch
     yield put({
       type: SIGN_UP_FAILURE,
       error: error.response.data,
