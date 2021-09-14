@@ -62,16 +62,15 @@ function* unfollow(action: AnyAction) {
 }
 
 function logInAPI(data: { id: string; password: string }): Promise<AxiosResponse<{ id: string; password: string }>> {
-  return axios.post("/api/login", data);
+  return axios.post("/user/login", data);
 }
 
-function* logIn(action: AnyAction) {
+function* logIn(action: AnyAction):Generator<any> {
   try {
-    // const result = yield call(logInAPI, action.data);
-    yield delay(1000);
+    const result = yield call(logInAPI, action.data);
     yield put({
       type: LOG_IN_SUCCESS,
-      data: action.data,
+      data: result,
     });
   } catch (error) {
     //put = action 을 dispatch
@@ -99,7 +98,7 @@ function* logOut(action: AnyAction) {
 }
 
 function signUpAPI(data: { id: string; password: string }): Promise<AxiosResponse<{ id: string; password: string }>> {
-  return axios.post("http://localhost:3065/user", data);
+  return axios.post("/user", data);
 }
 
 function* signUp(action: AnyAction):Generator<any> {
