@@ -65,12 +65,13 @@ function logInAPI(data: { email: string; password: string }): Promise<AxiosRespo
   return axios.post("/user/login", data);
 }
 
-function* logIn(action: AnyAction):Generator<any> {
+function* logIn(action: AnyAction):object {
   try {
     const result = yield call(logInAPI, action.data);
+    console.log("result", result.data)
     yield put({
       type: LOG_IN_SUCCESS,
-      data: result,
+      data: result.data,
     });
   } catch (error) {
     //put = action 을 dispatch
