@@ -61,7 +61,7 @@ function* unfollow(action: AnyAction) {
   }
 }
 
-function logInAPI(data: { id: string; password: string }): Promise<AxiosResponse<{ id: string; password: string }>> {
+function logInAPI(data: { email: string; password: string }): Promise<AxiosResponse<{ email: string; password: string }>> {
   return axios.post("/user/login", data);
 }
 
@@ -81,10 +81,14 @@ function* logIn(action: AnyAction):Generator<any> {
   }
 }
 
-function* logOut(action: AnyAction) {
+function logOutAPI() {
+  return axios.post('/user/logout');
+}
+
+function* logOut():Generator<any> {
   try {
-    // const result = yield call(logInAPI, action.data);
-    yield delay(1000);
+    const result = yield call(logOutAPI);
+    console.log(result)
     yield put({
       type: LOG_OUT_SUCCESS,
     });
@@ -104,6 +108,7 @@ function signUpAPI(data: { id: string; password: string }): Promise<AxiosRespons
 function* signUp(action: AnyAction):Generator<any> {
   try {
     const result = yield call(signUpAPI, action.data);
+    console.log(result)
     yield put({
       type: SIGN_UP_SUCCESS,
     });

@@ -85,21 +85,21 @@ export const ADD_POST_TO_ME = "ADD_POST_TO_ME";
 export const REMOVE_POST_OF_ME = "REMOVE_POST_OF_ME";
 
 // action creator
-export const loginRequestAction = (data: { id: string; password: string }) => {
+export const loginRequestAction = (data: { eamil: string; password: string }) => {
   return {
     type: LOG_IN_REQUEST,
     data,
   };
 };
 
-export const loginSuccessAction = (data: { id: string; password: string }) => {
+export const loginSuccessAction = (data: { eamil: string; password: string }) => {
   return {
     type: LOG_IN_SUCCESS,
     data,
   };
 };
 
-export const loginFailureAction = (data: { id: string; password: string }) => {
+export const loginFailureAction = (data: { eamil: string; password: string }) => {
   return {
     type: LOG_IN_FAILURE,
     data,
@@ -180,11 +180,11 @@ const reducer = (state = initialState, action: AnyAction) => {
         break;
       case LOG_IN_SUCCESS:
         draft.logInLoading = false;
+        draft.me = action.data;
         draft.logInDone = true;
-        draft.me = dummyUser(action.data);
         break;
       case LOG_IN_FAILURE:
-        draft.logInLoading = true;
+        draft.logInLoading = false;
         draft.logInError = action.error;
       case LOG_OUT_REQUEST:
         draft.logOutloading = true;

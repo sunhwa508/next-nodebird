@@ -1,7 +1,7 @@
 const passport = require('passport');
 const { Strategy: LocalStrategy } = require('passport-local');
+const bcrypt = require('bcrypt');
 const { User } = require('../models');
-const { connect } = require('../routes/post');
 
 module.exports = () => {
     passport.use(new LocalStrategy({
@@ -9,7 +9,7 @@ module.exports = () => {
         passwordField: 'password',
     }, async (email, password, done) =>{
         try{
-        const exUser = await User.findOne({
+        const user = await User.findOne({
             where: {email}
         });
         if(!user){
@@ -19,7 +19,7 @@ module.exports = () => {
         if(result){
             return done(null, user);
         }
-            return done(null, false, {reason: '비밀번호가 틀렸습니다.'});
+        return done(null, false, {reason: '비밀번호가 틀렸습니다.'});
         }catch(error){
             console.error(error);
             return done(error)

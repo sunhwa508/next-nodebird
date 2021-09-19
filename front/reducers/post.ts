@@ -75,7 +75,7 @@ const initialPostState: InitialPostProps = {
 
 export const generateDummyPost: any = (number: number) =>
   Array(number)
-    .fill()
+    .fill(undefined)
     .map(() => ({
       id: shortId.generate(),
       User: {
