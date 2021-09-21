@@ -17,11 +17,18 @@ const SubmitButton = styled.div`
 `
 const Signup = () => {
     const dispatch = useDispatch();
-    const {signUpLoading, signUpDone, signUpError} = useSelector((state: rootType)=> state.user);
+    const {signUpLoading, signUpDone, signUpError, me } = useSelector((state: rootType)=> state.user);
+
+    // 뒤로가기했을때 페이지 나오지 않게 하려면 push => replace
+    useEffect(() => {
+        if(me && me.id){
+            Router.replace('/')
+        }
+    }, [me && me.id]);
 
     useEffect(() => {
         if(signUpDone){
-            Router.push('/')
+            Router.replace('/')
         }
     }, [signUpDone]);
 

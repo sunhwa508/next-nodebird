@@ -1,7 +1,7 @@
 import { useCallback } from 'react';
 import { Card, Avatar, Button } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
-import { logoutRequestAction, LOG_OUT_REQUEST } from '../reducers/user';
+import { LOG_OUT_REQUEST } from '../reducers/user';
 import { rootType } from '../reducers';
 
 const UserProfile = () => {
@@ -9,12 +9,9 @@ const UserProfile = () => {
   const { me, logOutLoading } = useSelector((state: rootType) => state.user);
 
   const onLogOut = useCallback(() => {
-
     dispatch({
       type: LOG_OUT_REQUEST,
     });
-
-    // dispatch(logoutRequestAction());
   }, []);
 
   return (

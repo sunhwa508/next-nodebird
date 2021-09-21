@@ -16,13 +16,7 @@ export interface InitialUserProps {
   signUpDone: boolean;
   signUpError: boolean | null;
   signUpLoading: boolean;
-  me: null | {
-    id: number;
-    nickname: string;
-    Posts: Array<{ id: number }>;
-    Followings: Array<object>;
-    Followers: Array<object>;
-  };
+  me: any;
   signUpData: {};
   loginData: {};
 }
@@ -163,6 +157,7 @@ const reducer = (state = initialState, action: AnyAction) => {
         draft.logOutloading = false;
         draft.logOutDone = true;
         draft.logOutError = false;
+        draft.logInDone = false;
         draft.me = null;
         break;
       case LOG_OUT_FAILURE:

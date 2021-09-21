@@ -64,7 +64,7 @@ router.post('/', async (req, res, next)=>{ //POST /user/
     }
 });
 
-router.post('/user/logout', (req, res, next)=>{
+router.post('/logout', (req, res, next)=>{
     req.logout();
     req.session.destroy();
     res.send('ok');
