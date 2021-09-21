@@ -106,42 +106,10 @@ export const loginFailureAction = (data: { eamil: string; password: string }) =>
   };
 };
 
-//원칙적으로 3단계로 이루어져 있다.
-export const logoutRequestAction = () => {
-  return {
-    type: LOG_OUT_REQUEST,
-  };
-};
-
-export const logoutSuccessAction = () => {
-  return {
-    type: LOG_OUT_SUCCESS,
-  };
-};
-
-export const logoutFailureAction = () => {
-  return {
-    type: LOG_OUT_FAILURE,
-  };
-};
-
-export const signUpRequestAction = () => {
-  return {
-    type: SIGN_UP_REQUEST,
-  };
-};
-
-export const signUpSuccessAction = () => {
-  return {
-    type: SIGN_UP_SUCCESS,
-  };
-};
-
-export const signUpFailureAction = () => {
-  return {
-    type: SIGN_UP_FAILURE,
-  };
-};
+//함수로 만들어두면 다양한 곳에서 동적으로 값을 바꿀 수 있다.
+//객체인 경우 값이 고정되어 버리는 문제가 발생하며 값이 고정되어도 상관없으면 객체를, 값이 동적으로 바뀌어야 하면 함수를 쓴다.
+// { type: 'EXAMPLE', value: 'hello' }
+// const example = (data) => ({ type: 'EXAMPLE', value: data })
 
 const reducer = (state = initialState, action: AnyAction) => {
   console.log(action);
