@@ -3,7 +3,6 @@ const bcrypt = require('bcrypt');
 const passport = require('passport');
 
 const { User, Post } = require('../models');
-
 const router = express.Router();
 
 router.post('/login', (req, res, next)=>{ //POST /user/login
