@@ -22,15 +22,14 @@ db.sequelize
 passportConfig();
 
 app.use(
+  // 쿠키도 같이 전달하고 싶으면 creadentials : true
   cors({
-    origin: "*",
-    credentials: false,
+    origin: true,
+    credentials: true,
   }),
 );
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(
   session({
