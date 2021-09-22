@@ -1,12 +1,12 @@
 import axios, { AxiosResponse } from "axios";
-import { all, delay, put, fork, takeLatest, throttle } from "redux-saga/effects";
+import { all, delay, put, fork, takeLatest, throttle, call } from "redux-saga/effects";
 import { AnyAction } from "redux";
 import { rootType } from "../reducers";
 import {
+  generateDummyPost,
   ADD_POST_FAILURE,
   ADD_POST_REQUEST,
   ADD_POST_SUCCESS,
-  generateDummyPost,
   LOAD_POSTS_FAILURE,
   LOAD_POSTS_REQUEST,
   LOAD_POSTS_SUCCESS,
@@ -42,23 +42,20 @@ function* loadPosts(action: AnyAction) {
 }
 
 function addPostsAPI(data: rootType): Promise<AxiosResponse<rootType>> {
-  return axios.post("/post", data, {
-    withCredentials: true,
-  });
+  return axios.post("/post", { content: data }, { withCredentials: true });
 }
 
-function* addPost(action: AnyAction) {
+function* addPost(action: AnyAction): object {
   try {
-    // const result = yield call(logInAPI, action.data);
-    yield delay(1000);
+    const result = yield call(addPostsAPI, action.data);
     const id = shortId.generate();
     yield put({
       type: ADD_POST_SUCCESS,
-      data: { id, content: action.data },
+      data: result.data,
     });
     yield put({
       type: ADD_POST_TO_ME,
-      data: id,
+      data: result.data.id,
     });
   } catch (err) {
     //put = action 을 dispatch
@@ -70,13 +67,12 @@ function* addPost(action: AnyAction) {
 }
 
 function addCommentAPI(data: rootType): Promise<AxiosResponse<rootType>> {
-  return axios.post("/api/post/${data.postId}/comment", data);
+  return axios.post("/comment", data, { withCredentials: true });
 }
 
-function* addComment(action: AnyAction) {
+function* addComment(action: AnyAction): object {
   try {
-    // const result = yield call(logInAPI, action.data);
-    yield delay(1000);
+    const result = yield call(addCommentAPI, action.data);
     yield put({
       type: ADD_COMMENT_SUCCESS,
       data: action.data,

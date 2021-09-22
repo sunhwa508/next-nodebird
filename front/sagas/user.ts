@@ -17,7 +17,30 @@ import {
   UN_FOLLOW_REQUEST,
   UN_FOLLOW_SUCCESS,
   UN_FOLLOW_FAILURE,
+  LOAD_MY_INFO_REQUEST,
+  LOAD_MY_INFO_SUCCESS,
+  LOAD_MY_INFO_FAILURE,
 } from "../reducers/user";
+
+function loadMyInfoAPI() {
+  return axios.get("/user");
+}
+
+function* loadMyInfo(): object {
+  try {
+    const result = yield call(loadMyInfoAPI);
+    console.log("result", result);
+    yield put({
+      type: LOAD_MY_INFO_SUCCESS,
+      data: result.data,
+    });
+  } catch (error) {
+    yield put({
+      type: LOAD_MY_INFO_FAILURE,
+      error: error.response.data,
+    });
+  }
+}
 
 function followAPI(data: any) {
   return axios.post("/api/follow", data);
@@ -61,14 +84,17 @@ function* unfollow(action: AnyAction) {
   }
 }
 
-function logInAPI(data: { email: string; password: string }): Promise<AxiosResponse<{ email: string; password: string }>> {
+function logInAPI(data: {
+  email: string;
+  password: string;
+}): Promise<AxiosResponse<{ email: string; password: string }>> {
   return axios.post("/user/login", data);
 }
 
-function* logIn(action: AnyAction):object {
+function* logIn(action: AnyAction): object {
   try {
     const result = yield call(logInAPI, action.data);
-    console.log("result", result.data)
+    console.log("result", result.data);
     yield put({
       type: LOG_IN_SUCCESS,
       data: result.data,
@@ -83,13 +109,13 @@ function* logIn(action: AnyAction):object {
 }
 
 function logOutAPI() {
-  return axios.post('/user/logout');
+  return axios.post("/user/logout");
 }
 
-function* logOut():Generator<any> {
+function* logOut(): Generator<any> {
   try {
     const result = yield call(logOutAPI);
-    console.log(result)
+    console.log(result);
     yield put({
       type: LOG_OUT_SUCCESS,
     });
@@ -106,10 +132,10 @@ function signUpAPI(data: { id: string; password: string }): Promise<AxiosRespons
   return axios.post("/user", data);
 }
 
-function* signUp(action: AnyAction):Generator<any> {
+function* signUp(action: AnyAction): Generator<any> {
   try {
     const result = yield call(signUpAPI, action.data);
-    console.log(result)
+    console.log(result);
     yield put({
       type: SIGN_UP_SUCCESS,
     });
@@ -142,6 +168,17 @@ function* watchUnfollow() {
   yield takeLatest(UN_FOLLOW_REQUEST, unfollow);
 }
 
+function* watchloadMyInfo() {
+  yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo);
+}
+
 export default function* userSage() {
-  yield all([fork(watchFollow), fork(watchUnfollow), fork(watchLogIn), fork(watchLogOut), fork(watchSignUp)]);
+  yield all([
+    fork(watchFollow),
+    fork(watchUnfollow),
+    fork(watchloadMyInfo),
+    fork(watchLogIn),
+    fork(watchLogOut),
+    fork(watchSignUp),
+  ]);
 }

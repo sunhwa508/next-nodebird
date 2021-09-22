@@ -1,6 +1,9 @@
 import produce from "immer";
 import { AnyAction } from "redux";
 export interface InitialUserProps {
+  loadMyInfoDone: boolean;
+  loadMyInfoError: boolean | null;
+  loadMyInfoLoading: boolean;
   followDone: boolean;
   followError: boolean | null;
   followLoading: boolean;
@@ -22,6 +25,9 @@ export interface InitialUserProps {
 }
 
 export const initialState: InitialUserProps = {
+  loadMyInfoDone: false,
+  loadMyInfoError: null,
+  loadMyInfoLoading: false,
   followDone: false,
   followError: null,
   followLoading: false,
@@ -78,6 +84,10 @@ export const UN_FOLLOW_FAILURE = "UN_FOLLOW_FAILURE";
 export const ADD_POST_TO_ME = "ADD_POST_TO_ME";
 export const REMOVE_POST_OF_ME = "REMOVE_POST_OF_ME";
 
+export const LOAD_MY_INFO_REQUEST = "LOAD_MY_INFO_REQUEST";
+export const LOAD_MY_INFO_SUCCESS = "LOAD_MY_INFO_SUCCESS";
+export const LOAD_MY_INFO_FAILURE = "LOAD_MY_INFO_FAILURE";
+
 // action creator
 export const loginRequestAction = (data: { eamil: string; password: string }) => {
   return {
@@ -109,6 +119,20 @@ const reducer = (state = initialState, action: AnyAction) => {
   console.log(action);
   return produce<any>(state, draft => {
     switch (action.type) {
+      case LOAD_MY_INFO_REQUEST:
+        draft.loadMyInfoLoading = true;
+        draft.loadMyInfoError = null;
+        draft.loadMyInfoDone = false;
+        break;
+      case LOAD_MY_INFO_SUCCESS:
+        draft.loadMyInfoLoading = false;
+        draft.me = action.data;
+        draft.loadMyInfoDone = true;
+        break;
+      case LOAD_MY_INFO_FAILURE:
+        draft.loadMyInfoLoading = false;
+        draft.loadMyInfoError = action.error;
+        break;
       case UN_FOLLOW_REQUEST:
         draft.unfollowLoading = true;
         draft.unfollowError = null;
@@ -150,14 +174,12 @@ const reducer = (state = initialState, action: AnyAction) => {
         draft.logInError = action.error;
       case LOG_OUT_REQUEST:
         draft.logOutloading = true;
-        draft.logOutDone = false;
         draft.logOutError = null;
         break;
       case LOG_OUT_SUCCESS:
         draft.logOutloading = false;
         draft.logOutDone = true;
         draft.logOutError = false;
-        draft.logInDone = false;
         draft.me = null;
         break;
       case LOG_OUT_FAILURE:
@@ -209,6 +231,7 @@ const reducer = (state = initialState, action: AnyAction) => {
       //     Posts: state.me?.Posts.filter(v => v.id !== action.data),
       //   },
       // };
+
       default:
         break;
     }
