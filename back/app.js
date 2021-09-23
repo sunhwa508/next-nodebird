@@ -2,16 +2,17 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const session = require("express-session");
-
+const morgan = require("morgan");
+const dotenv = require("dotenv");
 const passport = require("passport");
+
 const postRouter = require("./routes/post");
+const postsRouter = require("./routes/posts");
 const userRouter = require("./routes/user");
 const db = require("./models");
 const passportConfig = require("./passport");
-const dotenv = require("dotenv");
 
 dotenv.config();
-
 const app = express();
 db.sequelize
   .sync()
@@ -21,10 +22,11 @@ db.sequelize
   .catch(console.error);
 passportConfig();
 
+app.use(morgan("dev"));
 app.use(
   // 쿠키도 같이 전달하고 싶으면 creadentials : true
   cors({
-    origin: true,
+    origin: "http://localhost:3060",
     credentials: true,
   }),
 );
@@ -41,18 +43,11 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-app.get("/api", (req, res) => {
-  res.send("hello");
+app.get("/", (req, res) => {
+  res.send("hello express");
 });
 
-app.get("/api/posts", (req, res) => {
-  res.json([
-    { id: 1, content: "hello" },
-    { id: 2, content: "hello2" },
-    { id: 3, content: "hello3" },
-  ]);
-});
-
+app.use("/posts", postsRouter);
 app.use("/post", postRouter);
 app.use("/user", userRouter);
 

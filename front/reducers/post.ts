@@ -1,7 +1,5 @@
 import produce from "immer";
 import { AnyAction } from "redux";
-import shortId from "shortid";
-import faker from "faker";
 
 export interface InitialPostElementProps {
   post: {
@@ -73,32 +71,6 @@ const initialPostState: InitialPostProps = {
   addCommentError: null,
 };
 
-export const generateDummyPost: any = (number: number) =>
-  Array(number)
-    .fill(undefined)
-    .map(() => ({
-      id: shortId.generate(),
-      User: {
-        id: shortId.generate(),
-        nickname: faker.name.findName(),
-      },
-      content: faker.lorem.paragraph(),
-      Images: [
-        {
-          src: faker.image.image(),
-        },
-      ],
-      Comments: [
-        {
-          User: {
-            id: shortId.generate(),
-            nickname: faker.name.findName(),
-          },
-          content: faker.lorem.sentence(),
-        },
-      ],
-    }));
-
 export const LOAD_POSTS_REQUEST = "LOAD_POSTS_REQUEST";
 export const LOAD_POSTS_SUCCESS = "LOAD_POSTS_SUCCESS";
 export const LOAD_POSTS_FAILURE = "LOAD_POSTS_FAILURE";
@@ -143,8 +115,8 @@ const reducer = (state = initialPostState, action: AnyAction) => {
       case LOAD_POSTS_SUCCESS:
         draft.loadPostsLoading = false;
         draft.loadPostsDone = true;
-        draft.mainPosts = action.data.concat(draft.mainPosts);
-        draft.hasMorePosts = action.data.concat(draft.mainPosts).length < 50;
+        draft.mainPosts = draft.mainPosts.concat(action.data);
+        draft.hasMorePosts = action.data.length === 10;
         break;
       case LOAD_POSTS_FAILURE:
         draft.loadPostsLoading = false;
