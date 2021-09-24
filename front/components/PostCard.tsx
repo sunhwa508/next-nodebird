@@ -9,28 +9,40 @@ import { InitialPostElementProps, CommentsProps, REMOVE_POST_REQUEST } from "../
 import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
 import FollowButton from "./FollowButton";
-
+import { LIKE_POST_REQUEST, UNLIKE_POST_REQUEST } from "../reducers/post";
 const PostCard = ({ post }: InitialPostElementProps) => {
-  const [liked, useLiked] = useState(false);
   const { removePostLoading } = useSelector((state: rootType) => state.post);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
+
+  const onLike = useCallback(() => {
+    dispatch({
+      type: LIKE_POST_REQUEST,
+      data: post.id,
+    });
+  }, []);
+
+  const onUnLike = useCallback(() => {
+    dispatch({
+      type: UNLIKE_POST_REQUEST,
+      data: post.id,
+    });
+  }, []);
+
   const id = useSelector((state: rootType) => state.user.me?.id);
   const dispatch = useDispatch();
 
-  const onToggleLike = useCallback(() => {
-    useLiked(prev => !prev);
-  }, []);
   const onToggleComment = useCallback(() => {
     setCommentFormOpened(prev => !prev);
   }, []);
 
   const onRemovePost = useCallback(() => {
-    console.log(post.id);
     dispatch({
       type: REMOVE_POST_REQUEST,
       data: post.id,
     });
   }, []);
+
+  const liked = post.Likers.find(v => v.id === id);
 
   return (
     <div>
@@ -39,9 +51,9 @@ const PostCard = ({ post }: InitialPostElementProps) => {
         actions={[
           <RetweetOutlined />,
           liked ? (
-            <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onToggleLike} />
+            <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onUnLike} />
           ) : (
-            <HeartTwoTone key="heart" onClick={onToggleLike} />
+            <HeartTwoTone key="heart" onClick={onLike} />
           ),
           <MessageOutlined key="comment" onClick={onToggleComment} />,
           <Popover

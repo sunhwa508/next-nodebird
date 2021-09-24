@@ -1,4 +1,4 @@
-import React, { useRef, useCallback, useState, useEffect } from "react";
+import React, { useRef, useCallback, useState, useEffect, Key } from "react";
 import { Form, Input, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 
@@ -44,10 +44,10 @@ const PostForm = () => {
         </Button>
       </div>
       <div>
-        {imagePaths.map(v => {
+        {imagePaths.map((v: Key) => {
           return (
             <div key={v} style={{ display: "inline-block" }}>
-              <img src={"http://localhost:3065/" + v} style={{ width: "200px" }} alt={v} />
+              <img src={"http://localhost:3065/" + v} style={{ width: "200px" }} alt={"alt"} />
               <div>
                 <Button>제거</Button>
               </div>

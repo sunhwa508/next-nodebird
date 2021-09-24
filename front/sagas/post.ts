@@ -14,10 +14,55 @@ import {
   REMOVE_POST_FAILURE,
   REMOVE_POST_REQUEST,
   REMOVE_POST_SUCCESS,
+  LIKE_POST_FAILURE,
+  LIKE_POST_REQUEST,
+  LIKE_POST_SUCCESS,
+  UNLIKE_POST_FAILURE,
+  UNLIKE_POST_REQUEST,
+  UNLIKE_POST_SUCCESS,
 } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 import shortId from "shortid";
-import { rootType } from "../reducers";
+
+function likePostAPI(data: AxiosRequestConfig | undefined) {
+  return axios.patch(`/post/${data}/like`);
+}
+
+function* likePost(action: AnyAction): object {
+  try {
+    const result = yield call(likePostAPI, action.data);
+    yield put({
+      type: LIKE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: LIKE_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function unlikePostAPI(data: AxiosRequestConfig | undefined) {
+  return axios.delete(`/post/${data}/like`);
+}
+
+function* unlikePost(action: AnyAction): object {
+  try {
+    const result = yield call(unlikePostAPI, action.data);
+    yield put({
+      type: UNLIKE_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: UNLIKE_POST_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
 
 function loadPostsAPI(data: AxiosRequestConfig | undefined) {
   return axios.get("/posts", data);
@@ -34,7 +79,7 @@ function* loadPosts(action: AnyAction): object {
     console.error(err);
     yield put({
       type: LOAD_POSTS_FAILURE,
-      data: err.response.data,
+      error: err.response.data,
     });
   }
 }
@@ -59,7 +104,7 @@ function* addPost(action: AnyAction): object {
     //put = action 을 dispatch
     yield put({
       type: ADD_POST_FAILURE,
-      data: err.response.data,
+      error: err.response.data,
     });
   }
 }
@@ -80,7 +125,7 @@ function* addComment(action: AnyAction): object {
     console.error(err);
     yield put({
       type: ADD_COMMENT_FAILURE,
-      data: err.response.data,
+      error: err.response.data,
     });
   }
 }
@@ -106,9 +151,17 @@ function* removePost(action: AnyAction) {
     //put = action 을 dispatch
     yield put({
       type: REMOVE_POST_FAILURE,
-      data: err.response.data,
+      error: err.response.data,
     });
   }
+}
+
+function* watchLikePost() {
+  yield takeLatest(LIKE_POST_REQUEST, likePost);
+}
+
+function* watchUnlikePost() {
+  yield takeLatest(UNLIKE_POST_REQUEST, unlikePost);
 }
 
 function* watchLoadPosts() {
@@ -128,5 +181,12 @@ function* watchAddComment() {
 }
 
 export default function* postSaga() {
-  yield all([fork(watchAddPost), fork(watchLoadPosts), fork(watchAddComment), fork(watchRemovePost)]);
+  yield all([
+    fork(watchAddPost),
+    fork(watchLoadPosts),
+    fork(watchLikePost),
+    fork(watchUnlikePost),
+    fork(watchAddComment),
+    fork(watchRemovePost),
+  ]);
 }

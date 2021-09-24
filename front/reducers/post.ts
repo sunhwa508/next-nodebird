@@ -21,6 +21,7 @@ export interface InitialPostElementProps {
       id: string;
       Posts: Array<object>;
     };
+    Likers: [];
   };
 }
 
@@ -40,6 +41,12 @@ export interface InitialPostProps {
   removePostLoading: boolean;
   removePostDone: boolean;
   removePostError: boolean | null;
+  likePostLoading: boolean;
+  likePostDone: boolean;
+  likePostError: boolean | null;
+  unLikePostLoading: boolean;
+  unLikePostDone: boolean;
+  unLikePostError: boolean | null;
 }
 
 export interface CommentsProps {
@@ -69,7 +76,21 @@ const initialPostState: InitialPostProps = {
   addCommentLoading: false,
   addCommentDone: false,
   addCommentError: null,
+  likePostLoading: false,
+  likePostDone: false,
+  likePostError: null,
+  unLikePostLoading: false,
+  unLikePostDone: false,
+  unLikePostError: null,
 };
+
+export const LIKE_POST_REQUEST = "LIKE_POST_REQUEST";
+export const LIKE_POST_SUCCESS = "LIKE_POST_SUCCESS";
+export const LIKE_POST_FAILURE = "LIKE_POST_FAILURE";
+
+export const UNLIKE_POST_REQUEST = "UNLIKE_POST_REQUEST";
+export const UNLIKE_POST_SUCCESS = "UNLIKE_POST_SUCCESS";
+export const UNLIKE_POST_FAILURE = "UNLIKE_POST_FAILURE";
 
 export const LOAD_POSTS_REQUEST = "LOAD_POSTS_REQUEST";
 export const LOAD_POSTS_SUCCESS = "LOAD_POSTS_SUCCESS";
@@ -97,7 +118,7 @@ export const addPost = (data: InitialPostElementProps) => ({
   data,
 });
 
-export const addComment = (data: any) => ({
+export const addComment = (data: object) => ({
   type: ADD_COMMENT_REQUEST,
   data,
 });
@@ -107,6 +128,39 @@ const reducer = (state = initialPostState, action: AnyAction) => {
   return produce<any>(state, draft => {
     //state 이름이 draft로 바뀐다
     switch (action.type) {
+      case LIKE_POST_REQUEST:
+        draft.likePostLoading = true;
+        draft.likePostDone = false;
+        draft.likePostError = null;
+        break;
+      case LIKE_POST_SUCCESS: {
+        const post = draft.mainPosts.find((v: { [key: string]: number }) => v.id === action.data.PostId);
+        post.Likers.push({ id: action.data.UserId });
+        draft.likePostLoading = false;
+        draft.likePostDone = true;
+        break;
+      }
+      case LIKE_POST_FAILURE:
+        draft.likePostLoading = false;
+        draft.likePostError = action.error;
+        break;
+      case UNLIKE_POST_REQUEST:
+        draft.unLinkPostLoading = true;
+        draft.unLinkPostDone = false;
+        draft.unLinkPostError = null;
+        break;
+      case UNLIKE_POST_SUCCESS: {
+        const post = draft.mainPosts.find((v: { [key: string]: number }) => v.id === action.data.PostId);
+        post.Likers = post.Likers.filter((v: { [key: string]: number }) => v.id == action.data.UserId);
+        draft.unlikePostLoading = false;
+        draft.unlikePostDone = true;
+        break;
+      }
+      case UNLIKE_POST_FAILURE:
+        draft.unLinkPostLoading = false;
+        draft.unLinkPostError = action.error;
+        break;
+
       case LOAD_POSTS_REQUEST:
         draft.loadPostsLoading = true;
         draft.loadPostsDone = false;
