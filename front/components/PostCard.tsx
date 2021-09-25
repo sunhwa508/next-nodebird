@@ -42,7 +42,7 @@ const PostCard = ({ post }: InitialPostElementProps) => {
     });
   }, []);
 
-  const liked = post.Likers.find(v => v.id === id);
+  const liked = post.Likers?.find(v => v.id == id);
 
   return (
     <div>

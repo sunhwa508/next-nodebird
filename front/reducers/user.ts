@@ -116,7 +116,6 @@ export const loginFailureAction = (data: { eamil: string; password: string }) =>
 // const example = (data) => ({ type: 'EXAMPLE', value: data })
 
 const reducer = (state = initialState, action: AnyAction) => {
-  console.log(action);
   return produce<any>(state, draft => {
     switch (action.type) {
       case LOAD_MY_INFO_REQUEST:

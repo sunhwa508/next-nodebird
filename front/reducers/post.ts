@@ -21,7 +21,7 @@ export interface InitialPostElementProps {
       id: string;
       Posts: Array<object>;
     };
-    Likers: [];
+    Likers: Array<{ id: number }>;
   };
 }
 
@@ -133,13 +133,13 @@ const reducer = (state = initialPostState, action: AnyAction) => {
         draft.likePostDone = false;
         draft.likePostError = null;
         break;
-      case LIKE_POST_SUCCESS: {
-        const post = draft.mainPosts.find((v: { [key: string]: number }) => v.id === action.data.PostId);
+      case LIKE_POST_SUCCESS:
+        const post = draft.mainPosts.find((v: any) => v.id === action.data.PostId);
         post.Likers.push({ id: action.data.UserId });
         draft.likePostLoading = false;
         draft.likePostDone = true;
         break;
-      }
+
       case LIKE_POST_FAILURE:
         draft.likePostLoading = false;
         draft.likePostError = action.error;
@@ -150,8 +150,8 @@ const reducer = (state = initialPostState, action: AnyAction) => {
         draft.unLinkPostError = null;
         break;
       case UNLIKE_POST_SUCCESS: {
-        const post = draft.mainPosts.find((v: { [key: string]: number }) => v.id === action.data.PostId);
-        post.Likers = post.Likers.filter((v: { [key: string]: number }) => v.id == action.data.UserId);
+        const post = draft.mainPosts.find((v: { [key: string]: number }) => v.id == action.data.PostId);
+        post.Likers = post.Likers.filter((v: { [key: string]: number }) => v.id !== action.data.UserId);
         draft.unlikePostLoading = false;
         draft.unlikePostDone = true;
         break;
@@ -160,7 +160,6 @@ const reducer = (state = initialPostState, action: AnyAction) => {
         draft.unLinkPostLoading = false;
         draft.unLinkPostError = action.error;
         break;
-
       case LOAD_POSTS_REQUEST:
         draft.loadPostsLoading = true;
         draft.loadPostsDone = false;

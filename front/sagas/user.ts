@@ -29,7 +29,6 @@ function loadMyInfoAPI() {
 function* loadMyInfo(): object {
   try {
     const result = yield call(loadMyInfoAPI);
-    console.log("result", result);
     yield put({
       type: LOAD_MY_INFO_SUCCESS,
       data: result.data,
@@ -94,7 +93,6 @@ function logInAPI(data: {
 function* logIn(action: AnyAction): object {
   try {
     const result = yield call(logInAPI, action.data);
-    console.log("result", result.data);
     yield put({
       type: LOG_IN_SUCCESS,
       data: result.data,
@@ -115,7 +113,6 @@ function logOutAPI() {
 function* logOut(): Generator<any> {
   try {
     const result = yield call(logOutAPI);
-    console.log(result);
     yield put({
       type: LOG_OUT_SUCCESS,
     });
@@ -135,7 +132,6 @@ function signUpAPI(data: { id: string; password: string }): Promise<AxiosRespons
 function* signUp(action: AnyAction): Generator<any> {
   try {
     const result = yield call(signUpAPI, action.data);
-    console.log(result);
     yield put({
       type: SIGN_UP_SUCCESS,
     });
