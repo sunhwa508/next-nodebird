@@ -20,8 +20,29 @@ import {
   LOAD_MY_INFO_REQUEST,
   LOAD_MY_INFO_SUCCESS,
   LOAD_MY_INFO_FAILURE,
+  CHANGE_NICKNAME_REQUEST,
+  CHANGE_NICKNAME_SUCCESS,
+  CHANGE_NICKNAME_FAILURE,
 } from "../reducers/user";
 
+function changeNicknameAPI(data: string) {
+  return axios.patch("/user/nickname", { nickname: data });
+}
+
+function* changeNickname(action: AnyAction): object {
+  try {
+    const result = yield call(changeNicknameAPI, action.data);
+    yield put({
+      type: CHANGE_NICKNAME_SUCCESS,
+      data: result.data,
+    });
+  } catch (error) {
+    yield put({
+      type: CHANGE_NICKNAME_FAILURE,
+      error: error.response.data,
+    });
+  }
+}
 function loadMyInfoAPI() {
   return axios.get("/user");
 }
@@ -167,9 +188,13 @@ function* watchUnfollow() {
 function* watchloadMyInfo() {
   yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo);
 }
+function* watchChangeNickname() {
+  yield takeLatest(CHANGE_NICKNAME_REQUEST, changeNickname);
+}
 
 export default function* userSage() {
   yield all([
+    fork(watchChangeNickname),
     fork(watchFollow),
     fork(watchUnfollow),
     fork(watchloadMyInfo),

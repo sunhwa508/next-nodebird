@@ -130,25 +130,23 @@ function* addComment(action: AnyAction): object {
   }
 }
 
-function removeCommentAPI(data: any) {
-  return axios.delete("/api/post", data);
+function removePostAPI(data: number) {
+  return axios.delete(`/post/${data}`);
 }
 
-function* removePost(action: AnyAction) {
+function* removePost(action: AnyAction): object {
   try {
-    // const result = yield call(logInAPI, action.data);
-    yield delay(1000);
-    const id = shortId.generate();
+    const result = yield call(removePostAPI, action.data);
     yield put({
       type: REMOVE_POST_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
     yield put({
       type: REMOVE_POST_OF_ME,
       data: action.data,
     });
   } catch (err) {
-    //put = action 을 dispatch
+    console.error(err);
     yield put({
       type: REMOVE_POST_FAILURE,
       error: err.response.data,
