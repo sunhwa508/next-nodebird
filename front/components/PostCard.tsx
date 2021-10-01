@@ -63,7 +63,7 @@ const PostCard = ({ post }: InitialPostElementProps) => {
                 {id && post.User.id === id ? (
                   <>
                     <Button>수정</Button>
-                    <Button type="primary" loading={removePostLoading} onClick={onRemovePost}>
+                    <Button type="ghost" loading={removePostLoading} onClick={onRemovePost}>
                       삭제
                     </Button>
                   </>

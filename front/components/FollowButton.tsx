@@ -7,7 +7,6 @@ import { UN_FOLLOW_REQUEST, FOLLOW_REQUEST } from "../reducers/user";
 
 const FollowButton = ({ post }: InitialPostElementProps) => {
   const { me, followLoading, unfollowLoading } = useSelector((state: rootType) => state.user);
-
   const isFollowing = me?.Followings.find((v: any) => v.id === post.User.id);
   const dispatch = useDispatch();
 
@@ -24,7 +23,9 @@ const FollowButton = ({ post }: InitialPostElementProps) => {
       });
     }
   }, [isFollowing]);
-
+  if (post.User.id === me.id) {
+    return null;
+  }
   return (
     <Button loading={followLoading || unfollowLoading} onClick={onClickButton}>
       {isFollowing ? "언팔로우" : "팔로우"}
