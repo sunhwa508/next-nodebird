@@ -1,4 +1,4 @@
-import { all, fork, takeLatest, delay, put, call } from "redux-saga/effects";
+import { all, fork, takeLatest, put, call } from "redux-saga/effects";
 import axios, { AxiosResponse } from "axios";
 import { AnyAction } from "redux";
 import {
@@ -29,8 +29,29 @@ import {
   LOAD_FOLLOWINGS_REQUEST,
   LOAD_FOLLOWINGS_SUCCESS,
   LOAD_FOLLOWINGS_FAILURE,
+  REMOVE_FOLLOWER_REQUEST,
+  REMOVE_FOLLOWER_SUCCESS,
+  REMOVE_FOLLOWER_FAILURE,
 } from "../reducers/user";
 
+function removeFollowerAPI(data: any) {
+  return axios.delete(`/user/follower/${data}`);
+}
+
+function* removeFollower(action: AnyAction): object {
+  try {
+    const result = yield call(removeFollowerAPI, action.data);
+    yield put({
+      type: REMOVE_FOLLOWER_SUCCESS,
+      data: result.data,
+    });
+  } catch (error) {
+    yield put({
+      type: REMOVE_FOLLOWER_FAILURE,
+      error: error.response.data,
+    });
+  }
+}
 function loadFollowersAPI(data: any) {
   return axios.get("/user/followers", data);
 }
@@ -51,7 +72,7 @@ function* loadFollowers(action: AnyAction): object {
 }
 
 function loadFollowingsAPI(data: any) {
-  return axios.get("/followings", data);
+  return axios.get("/user/followings", data);
 }
 
 function* loadFollowings(action: AnyAction): object {
@@ -239,10 +260,14 @@ function* watchLoadFollowers() {
 function* watchLoadFollowings() {
   yield takeLatest(LOAD_FOLLOWINGS_REQUEST, loadFollowings);
 }
+function* watchRemoveFollower() {
+  yield takeLatest(REMOVE_FOLLOWER_REQUEST, removeFollower);
+}
 
 export default function* userSage() {
   yield all([
     fork(watchChangeNickname),
+    fork(watchRemoveFollower),
     fork(watchLoadFollowers),
     fork(watchLoadFollowings),
     fork(watchFollow),

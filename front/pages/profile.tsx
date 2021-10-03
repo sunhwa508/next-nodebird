@@ -7,6 +7,7 @@ import { rootType } from "../reducers";
 import { useSelector, useDispatch } from "react-redux";
 import Router from "next/router";
 import { LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST } from "../reducers/user";
+import { ConsoleSqlOutlined } from "@ant-design/icons";
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ const Profile = () => {
   if (!me) {
     return null;
   }
-
+  console.log("folloer", me.Followers);
   return (
     <>
       <Head>

@@ -101,6 +101,10 @@ export const LOAD_FOLLOWINGS_REQUEST = "LOAD_FOLLOWINGS_REQUEST";
 export const LOAD_FOLLOWINGS_SUCCESS = "LOAD_FOLLOWINGS_SUCCESS";
 export const LOAD_FOLLOWINGS_FAILURE = "LOAD_FOLLOWINGS_FAILURE";
 
+export const REMOVE_FOLLOWER_REQUEST = "REMOVE_FOLLOWER_REQUEST";
+export const REMOVE_FOLLOWER_SUCCESS = "REMOVE_FOLLOWER_SUCCESS";
+export const REMOVE_FOLLOWER_FAILURE = "REMOVE_FOLLOWER_FAILURE";
+
 export const ADD_POST_TO_ME = "ADD_POST_TO_ME";
 export const REMOVE_POST_OF_ME = "REMOVE_POST_OF_ME";
 
@@ -138,6 +142,20 @@ export const loginFailureAction = (data: { eamil: string; password: string }) =>
 const reducer = (state = initialState, action: AnyAction) => {
   return produce<any>(state, draft => {
     switch (action.type) {
+      case REMOVE_FOLLOWER_REQUEST:
+        draft.loadFollowersLoading = true;
+        draft.loadFollowersError = null;
+        draft.loadFollowersDone = false;
+        break;
+      case REMOVE_FOLLOWER_SUCCESS:
+        draft.loadFollowersLoading = false;
+        draft.me.Followers = draft.me.Followers.filter((v: { id: string }) => v.id !== action.data.UserId);
+        draft.loadFollowersDone = true;
+        break;
+      case REMOVE_FOLLOWER_FAILURE:
+        draft.loadFollowersLoading = false;
+        draft.loadFollowersError = action.error;
+        break;
       case LOAD_FOLLOWERS_REQUEST:
         draft.loadFollowersLoading = true;
         draft.loadFollowersError = null;
@@ -152,7 +170,6 @@ const reducer = (state = initialState, action: AnyAction) => {
         draft.loadFollowersLoading = false;
         draft.loadFollowersError = action.error;
         break;
-
       case LOAD_FOLLOWINGS_REQUEST:
         draft.loadFollowingsLoading = true;
         draft.loadFollowingsError = null;

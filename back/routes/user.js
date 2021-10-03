@@ -164,7 +164,7 @@ router.get("/followers", isLoggedIn, async (req, res, next) => {
       res.status(403).send("없는 사람을 팔로우하려고 하시네요..");
     }
     const followers = await user.getFollowers(req.user.id);
-    res.status(200).json(folloers);
+    res.status(200).json(followers);
   } catch (error) {
     console.error(error);
     next(error);
@@ -179,6 +179,34 @@ router.get("/followings", isLoggedIn, async (req, res, next) => {
     }
     const followerings = await user.getFollowerings(req.user.id);
     res.status(200).json(followerings);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.delete("/:userId/follow", isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.params.userId } });
+    if (!user) {
+      res.status(403).send("없는 사용자를 언팔로우 하시네요");
+    }
+    await user.removeFollowers(req.user.id);
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+router.delete("/follower/:userId", isLoggedIn, async (req, res, next) => {
+  try {
+    const user = await User.findOne({ where: { id: req.params.userId } });
+    if (!user) {
+      res.status(403).send("없는 사용자를 차단하려고 하시네요");
+    }
+    await user.removeFollowings(req.user.id);
+    res.status(200).json({ UserId: parseInt(req.params.userId, 10) });
   } catch (error) {
     console.error(error);
     next(error);
