@@ -23,7 +23,51 @@ import {
   CHANGE_NICKNAME_REQUEST,
   CHANGE_NICKNAME_SUCCESS,
   CHANGE_NICKNAME_FAILURE,
+  LOAD_FOLLOWERS_REQUEST,
+  LOAD_FOLLOWERS_SUCCESS,
+  LOAD_FOLLOWERS_FAILURE,
+  LOAD_FOLLOWINGS_REQUEST,
+  LOAD_FOLLOWINGS_SUCCESS,
+  LOAD_FOLLOWINGS_FAILURE,
 } from "../reducers/user";
+
+function loadFollowersAPI(data: any) {
+  return axios.get("/user/followers", data);
+}
+
+function* loadFollowers(action: AnyAction): object {
+  try {
+    const result = yield call(loadFollowersAPI, action.data);
+    yield put({
+      type: LOAD_FOLLOWERS_SUCCESS,
+      data: result.data,
+    });
+  } catch (error) {
+    yield put({
+      type: LOAD_FOLLOWERS_FAILURE,
+      error: error.response.data,
+    });
+  }
+}
+
+function loadFollowingsAPI(data: any) {
+  return axios.get("/followings", data);
+}
+
+function* loadFollowings(action: AnyAction): object {
+  try {
+    const result = yield call(loadFollowingsAPI, action.data);
+    yield put({
+      type: LOAD_FOLLOWINGS_SUCCESS,
+      data: result.data,
+    });
+  } catch (error) {
+    yield put({
+      type: LOAD_FOLLOWINGS_FAILURE,
+      error: error.response.data,
+    });
+  }
+}
 
 function changeNicknameAPI(data: string) {
   return axios.patch("/user/nickname", { nickname: data });
@@ -62,20 +106,18 @@ function* loadMyInfo(): object {
   }
 }
 
-function followAPI(data: any) {
-  return axios.post("/api/follow", data);
+function followAPI(data: number) {
+  return axios.patch(`/user/${data}/follow`);
 }
 
-function* follow(action: AnyAction) {
+function* follow(action: AnyAction): object {
   try {
-    // const result = yield call(follow, action.data);
-    yield delay(1000);
+    const result = yield call(followAPI, action.data);
     yield put({
       type: FOLLOW_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (error) {
-    //put = action 을 dispatch
     yield put({
       type: FOLLOW_FAILURE,
       error: error.response.data,
@@ -83,20 +125,18 @@ function* follow(action: AnyAction) {
   }
 }
 
-function unfollowAPI(data: any) {
-  return axios.post("/api/unfollow", data);
+function unfollowAPI(data: number) {
+  return axios.delete(`/user/${data}/follow`);
 }
 
-function* unfollow(action: AnyAction) {
+function* unfollow(action: AnyAction): object {
   try {
-    // const result = yield call(unfollowAPI, action.data);
-    yield delay(1000);
+    const result = yield call(unfollowAPI, action.data);
     yield put({
       type: UN_FOLLOW_SUCCESS,
-      data: action.data,
+      data: result.data,
     });
   } catch (error) {
-    //put = action 을 dispatch
     yield put({
       type: UN_FOLLOW_FAILURE,
       error: error.response.data,
@@ -192,9 +232,19 @@ function* watchChangeNickname() {
   yield takeLatest(CHANGE_NICKNAME_REQUEST, changeNickname);
 }
 
+function* watchLoadFollowers() {
+  yield takeLatest(LOAD_FOLLOWERS_REQUEST, loadFollowers);
+}
+
+function* watchLoadFollowings() {
+  yield takeLatest(LOAD_FOLLOWINGS_REQUEST, loadFollowings);
+}
+
 export default function* userSage() {
   yield all([
     fork(watchChangeNickname),
+    fork(watchLoadFollowers),
+    fork(watchLoadFollowings),
     fork(watchFollow),
     fork(watchUnfollow),
     fork(watchloadMyInfo),
