@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig } from "axios";
-import { all, delay, put, fork, takeLatest, throttle, call } from "redux-saga/effects";
+import { all, put, fork, takeLatest, throttle, call } from "redux-saga/effects";
 import { AnyAction } from "redux";
 import {
   ADD_POST_FAILURE,
@@ -20,9 +20,32 @@ import {
   UNLIKE_POST_FAILURE,
   UNLIKE_POST_REQUEST,
   UNLIKE_POST_SUCCESS,
+  UPLOAD_IMAGES_FAILURE,
+  UPLOAD_IMAGES_REQUEST,
+  UPLOAD_IMAGES_SUCCESS,
 } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
 import shortId from "shortid";
+
+function uploadImagesAPI(data: AxiosRequestConfig | undefined) {
+  return axios.post(`/post/images`, data);
+}
+
+function* uploadImages(action: AnyAction): object {
+  try {
+    const result = yield call(uploadImagesAPI, action.data);
+    yield put({
+      type: UPLOAD_IMAGES_SUCCESS,
+      data: result.data,
+    });
+  } catch (err) {
+    console.error(err);
+    yield put({
+      type: UPLOAD_IMAGES_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
 
 function likePostAPI(data: AxiosRequestConfig | undefined) {
   return axios.patch(`/post/${data}/like`);
@@ -178,9 +201,13 @@ function* watchAddComment() {
   yield takeLatest(ADD_COMMENT_REQUEST, addComment);
 }
 
+function* watchUploadImages() {
+  yield takeLatest(UPLOAD_IMAGES_REQUEST, uploadImages);
+}
 export default function* postSaga() {
   yield all([
     fork(watchAddPost),
+    fork(watchUploadImages),
     fork(watchLoadPosts),
     fork(watchLikePost),
     fork(watchUnlikePost),
