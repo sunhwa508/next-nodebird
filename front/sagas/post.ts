@@ -108,7 +108,7 @@ function* loadPosts(action: AnyAction): object {
 }
 
 function addPostAPI(data: AxiosRequestConfig | undefined) {
-  return axios.post("/post", { content: data }, { withCredentials: true });
+  return axios.post("/post", data);
 }
 
 function* addPost(action: AnyAction): object {
