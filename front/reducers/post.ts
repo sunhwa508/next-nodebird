@@ -118,6 +118,8 @@ export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
 
+export const REMOVE_IMAGE = "REMOVE_IMAGE";
+
 export const removePost = (data: InitialPostElementProps) => ({
   type: REMOVE_POST_REQUEST,
   data,
@@ -138,6 +140,9 @@ const reducer = (state = initialPostState, action: AnyAction) => {
   return produce<any>(state, draft => {
     //state 이름이 draft로 바뀐다
     switch (action.type) {
+      case REMOVE_IMAGE:
+        draft.imagePaths = draft.imagePaths.filter((v: { [key: string]: number }, i: number) => i !== action.data);
+        break;
       case UPLOAD_IMAGES_REQUEST:
         draft.uploadImagesLoading = true;
         draft.uploadImagesDone = false;

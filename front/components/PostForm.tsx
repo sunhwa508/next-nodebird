@@ -2,7 +2,7 @@ import React, { useRef, useCallback, useState, useEffect, Key } from "react";
 import { Form, Input, Button } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 
-import { ADD_POST_REQUEST, UPLOAD_IMAGES_REQUEST } from "../reducers/post";
+import { ADD_POST_REQUEST, UPLOAD_IMAGES_REQUEST, REMOVE_IMAGE } from "../reducers/post";
 import { rootType } from "../reducers";
 
 const PostForm = () => {
@@ -45,6 +45,15 @@ const PostForm = () => {
     });
   }, []);
 
+  const onRemoveImage = useCallback(
+    index => () => {
+      dispatch({
+        type: REMOVE_IMAGE,
+        data: index,
+      });
+    },
+    [],
+  );
   return (
     <Form style={{ margin: "10px 0 20px" }} encType="multipart/form-data" onFinish={onSubmit}>
       <Input.TextArea value={text} onChange={onChangeText} maxLength={140} placeholder="어떤 신기한 일이 있었나요?" />
@@ -56,12 +65,12 @@ const PostForm = () => {
         </Button>
       </div>
       <div>
-        {imagePaths.map((v: Key) => {
+        {imagePaths.map((v: Key, i: number) => {
           return (
             <div key={v} style={{ display: "inline-block" }}>
-              <img src={"http://localhost:3065/" + v} style={{ width: "200px" }} alt={"alt"} />
+              <img src={`http://localhost:3065/${v}`} style={{ width: "200px" }} alt={"alt"} />
               <div>
-                <Button>제거</Button>
+                <Button onClick={onRemoveImage(i)}>제거</Button>
               </div>
             </div>
           );
