@@ -1,10 +1,11 @@
 const express = require("express");
 
-const { Post, User, Image, Comment } = require("../models");
+const { Post, User, Image, Comment, Hashtag } = require("../models");
 const { isLoggedIn } = require("./middlewares");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
+const hashtag = require("../models/hashtag");
 const router = express.Router();
 
 try {
@@ -32,10 +33,20 @@ const upload = multer({
 
 router.post("/", isLoggedIn, upload.none(), async (req, res, next) => {
   try {
+    const hashtags = req.body.content.match(/#[^\s#]+/g);
     const post = await Post.create({
       content: req.body.content,
       UserId: req.user.id,
     });
+    //해시태그 등록
+    if (hashtag) {
+      // '#노드 #익스프레스 안녕하세요.'.match(/#[^\s#]+/g);
+      // ["#노드", '#익스프레스]
+      const result = await Promise.all(
+        hashtags.map(tag => Hashtag.findOrCreate({ where: { name: tag.slice(1).toLowerCase() } })),
+      ); //[[노드, true],[리액트, true]]
+      await post.addHashtags(result.map(v => v[0]));
+    }
     if (req.body.image) {
       if (Array.isArray(req.body.image)) {
         //이미지를 여러개올리면 image : [제로초.png, image.png]
