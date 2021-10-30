@@ -50,6 +50,9 @@ export interface InitialPostProps {
   uploadImagesLoading: boolean;
   uploadImagesDone: boolean;
   uploadImagesError: boolean | null;
+  retweetLoading: boolean;
+  retweetDone: boolean;
+  retweetError: boolean | null;
 }
 
 export interface CommentsProps {
@@ -88,6 +91,9 @@ const initialPostState: InitialPostProps = {
   uploadImagesLoading: false,
   uploadImagesDone: false,
   uploadImagesError: null,
+  retweetLoading: false,
+  retweetDone: false,
+  retweetError: null,
 };
 
 export const LIKE_POST_REQUEST = "LIKE_POST_REQUEST";
@@ -118,6 +124,10 @@ export const ADD_COMMENT_REQUEST = "ADD_COMMENT_REQUEST";
 export const ADD_COMMENT_SUCCESS = "ADD_COMMENT_SUCCESS";
 export const ADD_COMMENT_FAILURE = "ADD_COMMENT_FAILURE";
 
+export const RETWEET_REQUEST = "RETWEET_REQUEST";
+export const RETWEET_SUCCESS = "RETWEET_SUCCESS";
+export const RETWEET_FAILURE = "RETWEET_FAILURE";
+
 export const REMOVE_IMAGE = "REMOVE_IMAGE";
 
 export const removePost = (data: InitialPostElementProps) => ({
@@ -140,8 +150,23 @@ const reducer = (state = initialPostState, action: AnyAction) => {
   return produce<any>(state, draft => {
     //state 이름이 draft로 바뀐다
     switch (action.type) {
+      case RETWEET_REQUEST:
+        draft.retweetLoading = true;
+        draft.retweetDone = false;
+        draft.retweetError = null;
+        break;
+      case RETWEET_SUCCESS:
+        draft.retweetLoading = false;
+        draft.retweetDone = true;
+        break;
+      case RETWEET_FAILURE:
+        draft.retweetLoading = false;
+        draft.retweetError = action.error;
+        break;
       case REMOVE_IMAGE:
-        draft.imagePaths = draft.imagePaths.filter((v: { [key: string]: number }, i: number) => i !== action.data);
+        draft.imagePaths = draft.imagePaths.filter(
+          (v: { [key: string]: number }, i: number) => i !== action.data,
+        );
         break;
       case UPLOAD_IMAGES_REQUEST:
         draft.uploadImagesLoading = true;
@@ -179,8 +204,12 @@ const reducer = (state = initialPostState, action: AnyAction) => {
         draft.unLinkPostError = null;
         break;
       case UNLIKE_POST_SUCCESS: {
-        const post = draft.mainPosts.find((v: { [key: string]: number }) => v.id == action.data.PostId);
-        post.Likers = post.Likers.filter((v: { [key: string]: number }) => v.id !== action.data.UserId);
+        const post = draft.mainPosts.find(
+          (v: { [key: string]: number }) => v.id == action.data.PostId,
+        );
+        post.Likers = post.Likers.filter(
+          (v: { [key: string]: number }) => v.id !== action.data.UserId,
+        );
         draft.unlikePostLoading = false;
         draft.unlikePostDone = true;
         break;
@@ -225,7 +254,9 @@ const reducer = (state = initialPostState, action: AnyAction) => {
         draft.removePostDone = false;
         break;
       case REMOVE_POST_SUCCESS:
-        draft.mainPosts = draft.mainPosts.filter((v: { [key: string]: string }) => v.id !== action.data.PostId);
+        draft.mainPosts = draft.mainPosts.filter(
+          (v: { [key: string]: string }) => v.id !== action.data.PostId,
+        );
         draft.removePostLoading = false;
         draft.removePostDone = true;
         break;

@@ -5,7 +5,7 @@ import Avatar from "antd/lib/avatar/avatar";
 import { useSelector, useDispatch } from "react-redux";
 import { rootType } from "../reducers";
 import PostImages from "./PostImages";
-import { InitialPostElementProps, CommentsProps, REMOVE_POST_REQUEST } from "../reducers/post";
+import { InitialPostElementProps, CommentsProps, REMOVE_POST_REQUEST, RETWEET_REQUEST } from "../reducers/post";
 import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
 import FollowButton from "./FollowButton";
@@ -13,35 +13,52 @@ import { LIKE_POST_REQUEST, UNLIKE_POST_REQUEST } from "../reducers/post";
 const PostCard = ({ post }: InitialPostElementProps) => {
   const { removePostLoading } = useSelector((state: rootType) => state.post);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
+  const id = useSelector((state: rootType) => state.user.me?.id);
+  const dispatch = useDispatch();
 
   const onLike = useCallback(() => {
+    if (!id) {
+      return alert("로그인이 필요합니다.");
+    }
     dispatch({
       type: LIKE_POST_REQUEST,
       data: post.id,
     });
-  }, []);
+  }, [id]);
 
   const onUnLike = useCallback(() => {
+    if (!id) {
+      return alert("로그인이 필요합니다.");
+    }
     dispatch({
       type: UNLIKE_POST_REQUEST,
       data: post.id,
     });
-  }, []);
-
-  const id = useSelector((state: rootType) => state.user.me?.id);
-  const dispatch = useDispatch();
+  }, [id]);
 
   const onToggleComment = useCallback(() => {
     setCommentFormOpened(prev => !prev);
   }, []);
 
   const onRemovePost = useCallback(() => {
+    if (!id) {
+      return alert("로그인이 필요합니다.");
+    }
     dispatch({
       type: REMOVE_POST_REQUEST,
       data: post.id,
     });
-  }, []);
+  }, [id]);
 
+  const onRetweet = useCallback(() => {
+    if (!id) {
+      return alert("로그인이 필요합니다.");
+    }
+    return dispatch({
+      type: RETWEET_REQUEST,
+      data: post.id,
+    });
+  }, [id]);
   const liked = post.Likers?.find(v => v.id == id);
 
   return (
