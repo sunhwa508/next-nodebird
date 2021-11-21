@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { EllipsisOutlined, MessageOutlined, RetweetOutlined, HeartTwoTone } from "@ant-design/icons";
 import { Card, Popover, Button, List, Comment } from "antd";
 import Avatar from "antd/lib/avatar/avatar";
@@ -59,6 +59,7 @@ const PostCard = ({ post }: InitialPostElementProps) => {
       data: post.id,
     });
   }, [id]);
+
   const liked = post.Likers?.find(v => v.id == id);
 
   return (
@@ -66,7 +67,7 @@ const PostCard = ({ post }: InitialPostElementProps) => {
       <Card
         cover={post.Images[0] && <PostImages images={post.Images} />}
         actions={[
-          <RetweetOutlined />,
+          <RetweetOutlined key="retweet" onClick={onRetweet} />,
           liked ? (
             <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onUnLike} />
           ) : (
@@ -93,13 +94,24 @@ const PostCard = ({ post }: InitialPostElementProps) => {
             <EllipsisOutlined />
           </Popover>,
         ]}
+        title={post.RetweetId ? `${post.User.nickname}님이 리트윗 하셨습니다.` : null}
         extra={id && <FollowButton post={post} />}
       >
-        <Card.Meta
-          avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-          title={post.User.nickname}
-          description={<PostCardContent postData={post.content} />}
-        />
+        {post.RetweetId && post.Retweet ? (
+          <Card cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />}>
+            <Card.Meta
+              avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
+              title={post.Retweet.User.nickname}
+              description={<PostCardContent postData={post.Retweet.content} />}
+            />
+          </Card>
+        ) : (
+          <Card.Meta
+            avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
+            title={post.User.nickname}
+            description={<PostCardContent postData={post.content} />}
+          />
+        )}
       </Card>
       {commentFormOpened && (
         <div>

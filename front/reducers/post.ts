@@ -22,6 +22,8 @@ export interface InitialPostElementProps {
       Posts: Array<object>;
     };
     Likers: Array<{ id: number }>;
+    RetweetId: number;
+    Retweet: any;
   };
 }
 
@@ -158,15 +160,14 @@ const reducer = (state = initialPostState, action: AnyAction) => {
       case RETWEET_SUCCESS:
         draft.retweetLoading = false;
         draft.retweetDone = true;
+        draft.mainPosts.unshift(action.data);
         break;
       case RETWEET_FAILURE:
         draft.retweetLoading = false;
         draft.retweetError = action.error;
         break;
       case REMOVE_IMAGE:
-        draft.imagePaths = draft.imagePaths.filter(
-          (v: { [key: string]: number }, i: number) => i !== action.data,
-        );
+        draft.imagePaths = draft.imagePaths.filter((v: { [key: string]: number }, i: number) => i !== action.data);
         break;
       case UPLOAD_IMAGES_REQUEST:
         draft.uploadImagesLoading = true;
@@ -204,12 +205,8 @@ const reducer = (state = initialPostState, action: AnyAction) => {
         draft.unLinkPostError = null;
         break;
       case UNLIKE_POST_SUCCESS: {
-        const post = draft.mainPosts.find(
-          (v: { [key: string]: number }) => v.id == action.data.PostId,
-        );
-        post.Likers = post.Likers.filter(
-          (v: { [key: string]: number }) => v.id !== action.data.UserId,
-        );
+        const post = draft.mainPosts.find((v: { [key: string]: number }) => v.id == action.data.PostId);
+        post.Likers = post.Likers.filter((v: { [key: string]: number }) => v.id !== action.data.UserId);
         draft.unlikePostLoading = false;
         draft.unlikePostDone = true;
         break;
@@ -254,9 +251,7 @@ const reducer = (state = initialPostState, action: AnyAction) => {
         draft.removePostDone = false;
         break;
       case REMOVE_POST_SUCCESS:
-        draft.mainPosts = draft.mainPosts.filter(
-          (v: { [key: string]: string }) => v.id !== action.data.PostId,
-        );
+        draft.mainPosts = draft.mainPosts.filter((v: { [key: string]: string }) => v.id !== action.data.PostId);
         draft.removePostLoading = false;
         draft.removePostDone = true;
         break;
