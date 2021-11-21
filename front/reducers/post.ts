@@ -28,7 +28,7 @@ export interface InitialPostElementProps {
 }
 
 export interface InitialPostProps {
-  mainPosts: [];
+  mainPosts: any[];
   imagePaths: [];
   hasMorePosts: boolean;
   loadPostsLoading: boolean;

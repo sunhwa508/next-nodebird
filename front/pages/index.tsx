@@ -32,8 +32,10 @@ const Home = () => {
       const { clientHeight, scrollHeight } = document.documentElement;
       if (window.scrollY + clientHeight > scrollHeight - 300) {
         if (hasMorePosts && !loadPostsLoading) {
+          const lastId = mainPosts[mainPosts.length - 1]?.id;
           dispatch({
             type: LOAD_POSTS_REQUEST,
+            lastId,
           });
         }
       }
@@ -42,7 +44,7 @@ const Home = () => {
     return () => {
       window.removeEventListener("scroll", onScroll);
     };
-  }, [hasMorePosts, loadPostsLoading]);
+  }, [hasMorePosts, mainPosts, loadPostsLoading]);
 
   return (
     <AppLayout>

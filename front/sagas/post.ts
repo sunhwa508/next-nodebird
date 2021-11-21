@@ -110,13 +110,13 @@ function* unlikePost(action: AnyAction): object {
   }
 }
 
-function loadPostsAPI(data: AxiosRequestConfig | undefined) {
-  return axios.get("/posts", data);
+function loadPostsAPI(lastId: number) {
+  return axios.get(`/posts?lastId=${lastId || 0}`);
 }
 
 function* loadPosts(action: AnyAction): object {
   try {
-    const result = yield call(loadPostsAPI, action.data);
+    const result = yield call(loadPostsAPI, action.lastId);
     yield put({
       type: LOAD_POSTS_SUCCESS,
       data: result.data,
@@ -137,7 +137,6 @@ function addPostAPI(data: AxiosRequestConfig | undefined) {
 function* addPost(action: AnyAction): object {
   try {
     const result = yield call(addPostAPI, action.data);
-    const id = shortId.generate();
     yield put({
       type: ADD_POST_SUCCESS,
       data: result.data,
@@ -148,6 +147,7 @@ function* addPost(action: AnyAction): object {
     });
   } catch (err) {
     //put = action 을 dispatch
+    console.error(err);
     yield put({
       type: ADD_POST_FAILURE,
       error: err.response.data,
