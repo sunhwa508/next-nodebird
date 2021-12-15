@@ -14,18 +14,30 @@ export interface rootType {
   post: InitialPostProps;
 }
 // (이전상태, 액션) => (변경된)다음상태
-const rootReducer = combineReducers({
-  index: (state = {}, action: AnyAction) => {
-    switch (action.type) {
-      case HYDRATE:
-        console.log("HYDRATE", action);
-        return action.payload;
-      default:
-        return state;
+const rootReducer = (state:any , action: AnyAction) => {
+  switch(action.type){
+    case HYDRATE:
+      console.log('HYDRATE',action)
+      return action.payload;
+    default:{
+      const combinedReducer = combineReducers({
+        user, 
+        post
+      });
+      return combinedReducer(state, action)
     }
-  },
-  user,
-  post,
-});
+  }
+  // index: (state = {}, action: AnyAction) => {
+  //   switch (action.type) {
+  //     case HYDRATE:
+  //       console.log("HYDRATE", action);
+  //       return action.payload;
+  //     default:
+  //       return state;
+  //   }
+  // },
+  // user,
+  // post,
+}
 
 export default rootReducer;
