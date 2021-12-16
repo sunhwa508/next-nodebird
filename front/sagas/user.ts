@@ -20,6 +20,9 @@ import {
   LOAD_MY_INFO_REQUEST,
   LOAD_MY_INFO_SUCCESS,
   LOAD_MY_INFO_FAILURE,
+  LOAD_USER_REQUEST,
+  LOAD_USER_SUCCESS,
+  LOAD_USER_FAILURE,
   CHANGE_NICKNAME_REQUEST,
   CHANGE_NICKNAME_SUCCESS,
   CHANGE_NICKNAME_FAILURE,
@@ -45,7 +48,7 @@ function* removeFollower(action: AnyAction): object {
       type: REMOVE_FOLLOWER_SUCCESS,
       data: result.data,
     });
-  } catch (error) {
+  } catch (error:any) {
     yield put({
       type: REMOVE_FOLLOWER_FAILURE,
       error: error.response.data,
@@ -63,7 +66,7 @@ function* loadFollowers(action: AnyAction): object {
       type: LOAD_FOLLOWERS_SUCCESS,
       data: result.data,
     });
-  } catch (error) {
+  } catch (error:any) {
     yield put({
       type: LOAD_FOLLOWERS_FAILURE,
       error: error.response.data,
@@ -82,7 +85,7 @@ function* loadFollowings(action: AnyAction): object {
       type: LOAD_FOLLOWINGS_SUCCESS,
       data: result.data,
     });
-  } catch (error) {
+  } catch (error:any) {
     yield put({
       type: LOAD_FOLLOWINGS_FAILURE,
       error: error.response.data,
@@ -101,13 +104,14 @@ function* changeNickname(action: AnyAction): object {
       type: CHANGE_NICKNAME_SUCCESS,
       data: result.data,
     });
-  } catch (error) {
+  } catch (error:any) {
     yield put({
       type: CHANGE_NICKNAME_FAILURE,
       error: error.response.data,
     });
   }
 }
+
 function loadMyInfoAPI() {
   return axios.get("/user");
 }
@@ -119,9 +123,29 @@ function* loadMyInfo(): object {
       type: LOAD_MY_INFO_SUCCESS,
       data: result.data,
     });
-  } catch (error) {
+  } catch (error:any) {
     yield put({
       type: LOAD_MY_INFO_FAILURE,
+      error: error.response.data,
+    });
+  }
+}
+
+function loadUserAPI(data: number) {
+  return axios.get(`/user/${data}`);
+}
+
+function* loadUser(action: AnyAction): object{
+  try {
+    const result = yield call(loadUserAPI, action.data);
+    yield put({
+      type: LOAD_USER_SUCCESS,
+      data: result.data,
+    });
+  } catch (error:any) {
+    console.error(error);
+    yield put({
+      type: LOAD_USER_FAILURE,
       error: error.response.data,
     });
   }
@@ -138,7 +162,7 @@ function* follow(action: AnyAction): object {
       type: FOLLOW_SUCCESS,
       data: result.data,
     });
-  } catch (error) {
+  } catch (error:any) {
     yield put({
       type: FOLLOW_FAILURE,
       error: error.response.data,
@@ -157,7 +181,7 @@ function* unfollow(action: AnyAction): object {
       type: UN_FOLLOW_SUCCESS,
       data: result.data,
     });
-  } catch (error) {
+  } catch (error:any) {
     yield put({
       type: UN_FOLLOW_FAILURE,
       error: error.response.data,
@@ -179,7 +203,7 @@ function* logIn(action: AnyAction): object {
       type: LOG_IN_SUCCESS,
       data: result.data,
     });
-  } catch (error) {
+  } catch (error:any) {
     //put = action 을 dispatch
     yield put({
       type: LOG_IN_FAILURE,
@@ -198,7 +222,7 @@ function* logOut(): Generator<any> {
     yield put({
       type: LOG_OUT_SUCCESS,
     });
-  } catch (error) {
+  } catch (error:any) {
     //put = action 을 dispatch
     yield put({
       type: LOG_OUT_FAILURE,
@@ -217,7 +241,7 @@ function* signUp(action: AnyAction): Generator<any> {
     yield put({
       type: SIGN_UP_SUCCESS,
     });
-  } catch (error) {
+  } catch (error:any) {
     yield put({
       type: SIGN_UP_FAILURE,
       error: error.response.data,
@@ -230,33 +254,30 @@ function* watchLogIn() {
   // LOG_IN 이라는 액션이 실행 될떄까지 기다리겠다.
   yield takeLatest(LOG_IN_REQUEST, logIn);
 }
-
 function* watchLogOut() {
   yield takeLatest(LOG_OUT_REQUEST, logOut);
 }
-
 function* watchSignUp() {
   yield takeLatest(SIGN_UP_REQUEST, signUp);
 }
 function* watchFollow() {
   yield takeLatest(FOLLOW_REQUEST, follow);
 }
-
 function* watchUnfollow() {
   yield takeLatest(UN_FOLLOW_REQUEST, unfollow);
 }
-
 function* watchloadMyInfo() {
   yield takeLatest(LOAD_MY_INFO_REQUEST, loadMyInfo);
+}
+function* watchloadUser() {
+  yield takeLatest(LOAD_USER_REQUEST, loadUser);
 }
 function* watchChangeNickname() {
   yield takeLatest(CHANGE_NICKNAME_REQUEST, changeNickname);
 }
-
 function* watchLoadFollowers() {
   yield takeLatest(LOAD_FOLLOWERS_REQUEST, loadFollowers);
 }
-
 function* watchLoadFollowings() {
   yield takeLatest(LOAD_FOLLOWINGS_REQUEST, loadFollowings);
 }
@@ -276,5 +297,6 @@ export default function* userSage() {
     fork(watchLogIn),
     fork(watchLogOut),
     fork(watchSignUp),
+    fork(watchloadUser)
   ]);
 }

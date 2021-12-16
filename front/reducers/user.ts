@@ -25,9 +25,14 @@ export interface InitialUserProps {
   signUpDone: boolean;
   signUpError: boolean | null;
   signUpLoading: boolean;
+  loadUserDone: boolean,
+  loadUserError: boolean | null,
+  loadUserLoading: boolean,
   me: any;
   signUpData: {};
   loginData: {};
+  userInfo: any | null;
+
 }
 
 export const initialState: InitialUserProps = {
@@ -40,6 +45,9 @@ export const initialState: InitialUserProps = {
   loadMyInfoDone: false,
   loadMyInfoError: null,
   loadMyInfoLoading: false,
+  loadUserDone: false,
+  loadUserError: null,
+  loadUserLoading: false,
   followDone: false,
   followError: null,
   followLoading: false,
@@ -58,16 +66,8 @@ export const initialState: InitialUserProps = {
   me: null,
   signUpData: {},
   loginData: {},
+  userInfo: null,
 };
-
-const dummyUser = (data: { nickname: string; id: number }) => ({
-  ...data,
-  nickname: "선화",
-  id: 1,
-  Posts: [{ id: 1 }],
-  Followings: [{ nickname: "선화초" }, { nickname: "chanhoLee" }, { nickname: "nenuzeal" }],
-  Followers: [{ nickname: "선화초" }, { nickname: "chanhoLee" }, { nickname: "nenuzeal" }],
-});
 
 export const LOG_IN_REQUEST = "LOG_IN_REQUEST";
 export const LOG_IN_SUCCESS = "LOG_IN_SUCCESS";
@@ -112,6 +112,9 @@ export const LOAD_MY_INFO_REQUEST = "LOAD_MY_INFO_REQUEST";
 export const LOAD_MY_INFO_SUCCESS = "LOAD_MY_INFO_SUCCESS";
 export const LOAD_MY_INFO_FAILURE = "LOAD_MY_INFO_FAILURE";
 
+export const LOAD_USER_REQUEST = 'LOAD_USER_REQUEST';
+export const LOAD_USER_SUCCESS = 'LOAD_USER_SUCCESS';
+export const LOAD_USER_FAILURE = 'LOAD_USER_FAILURE';
 // action creator
 export const loginRequestAction = (data: { eamil: string; password: string }) => {
   return {
@@ -184,7 +187,6 @@ const reducer = (state = initialState, action: AnyAction) => {
         draft.loadFollowingsLoading = false;
         draft.loadFollowingsError = action.error;
         break;
-
       case LOAD_MY_INFO_REQUEST:
         draft.loadMyInfoLoading = true;
         draft.loadMyInfoError = null;
@@ -199,6 +201,20 @@ const reducer = (state = initialState, action: AnyAction) => {
         draft.loadMyInfoLoading = false;
         draft.loadMyInfoError = action.error;
         break;
+        case LOAD_USER_REQUEST:
+          draft.loadUserLoading = true;
+          draft.loadUserError = null;
+          draft.loadUserDone = false;
+          break;
+        case LOAD_USER_SUCCESS:
+          draft.loadUserLoading = false;
+          draft.userInfo = action.data;
+          draft.loadUserDone = true;
+          break;
+        case LOAD_USER_FAILURE:
+          draft.loadUserLoading = false;
+          draft.loadUserError = action.error;
+          break;
       case UN_FOLLOW_REQUEST:
         draft.unfollowLoading = true;
         draft.unfollowError = null;
