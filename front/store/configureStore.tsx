@@ -5,6 +5,7 @@ import reducer from '../reducers/index';
 import createSagaMiddleware from 'redux-saga';
 
 import rootSaga from '../sagas';
+import { SagaStore } from './redux';
 
 interface Props {
   dispatch: Dispatch;
@@ -28,6 +29,7 @@ const configureStore = () => {
       : composeWithDevTools(applyMiddleware(...middlewares));
   const store = createStore(reducer, enhancer);
   store.sagaTask = sagaMiddleware.run(rootSaga);
+
   return store;
 };
 

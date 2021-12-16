@@ -6,3 +6,7 @@ declare module 'redux' {
     sagaTask?: Task;
   }
 }
+
+export interface SagaStore extends Store<State, AnyAction> {
+  sagaTask: Task;
+}
