@@ -6,14 +6,15 @@ import FollowList from "../components/FollowList";
 import { rootType } from "../reducers";
 import { useSelector, useDispatch } from "react-redux";
 import Router from "next/router";
-import { LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST } from "../reducers/user";
-import { ConsoleSqlOutlined } from "@ant-design/icons";
+import { LOAD_FOLLOWERS_REQUEST, LOAD_FOLLOWINGS_REQUEST, LOAD_MY_INFO_REQUEST } from "../reducers/user";
+import wrapper from "../store/configureStore";
+import axios from "axios";
+import { END } from "redux-saga";
+import { SagaStore } from "../store/redux";
 
 const Profile = () => {
   const dispatch = useDispatch();
   const { me } = useSelector((state: rootType) => state.user);
-  const followerList = [{ nickname: "제로초" }, { nickname: "바보" }, { nickname: "노드버드 오피셜" }];
-  const followingList = [{ nickname: "제로초" }, { nickname: "바보" }, { nickname: "노드버드 오피셜" }];
 
   useEffect(() => {
     dispatch({
@@ -32,7 +33,6 @@ const Profile = () => {
   if (!me) {
     return null;
   }
-  console.log("folloer", me.Followers);
   return (
     <>
       <Head>
@@ -47,5 +47,20 @@ const Profile = () => {
     </>
   );
 };
+
+export const getServerSideProps  = wrapper.getServerSideProps((store) => async ({ req }):Promise<any> => {
+  const cookie = req ? req.headers.cookie : '';
+  axios.defaults.headers.Cookie = '';
+  if(req && cookie){
+    axios.defaults.headers.Cookie = cookie;
+  }
+  store.dispatch({
+    type: LOAD_MY_INFO_REQUEST,
+  });
+
+  store.dispatch(END);
+  await (store as SagaStore).sagaTask.toPromise();
+ });
+
 
 export default Profile;

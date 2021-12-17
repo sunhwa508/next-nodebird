@@ -26,9 +26,11 @@ import {
   RETWEET_FAILURE,
   RETWEET_REQUEST,
   RETWEET_SUCCESS,
+  LOAD_POST_REQUEST,
+  LOAD_POST_SUCCESS,
+  LOAD_POST_FAILURE,
 } from "../reducers/post";
 import { ADD_POST_TO_ME, REMOVE_POST_OF_ME } from "../reducers/user";
-import shortId from "shortid";
 
 function retweetAPI(data: AxiosRequestConfig | undefined) {
   return axios.post(`/post/${data}/retweet`);
@@ -41,8 +43,7 @@ function* retweet(action: AnyAction): object {
       type: RETWEET_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
     yield put({
       type: RETWEET_FAILURE,
       error: err.response.data,
@@ -61,8 +62,7 @@ function* uploadImages(action: AnyAction): object {
       type: UPLOAD_IMAGES_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
     yield put({
       type: UPLOAD_IMAGES_FAILURE,
       error: err.response.data,
@@ -81,8 +81,7 @@ function* likePost(action: AnyAction): object {
       type: LIKE_POST_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
     yield put({
       type: LIKE_POST_FAILURE,
       error: err.response.data,
@@ -101,8 +100,7 @@ function* unlikePost(action: AnyAction): object {
       type: UNLIKE_POST_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
     yield put({
       type: UNLIKE_POST_FAILURE,
       error: err.response.data,
@@ -121,10 +119,28 @@ function* loadPosts(action: AnyAction): object {
       type: LOAD_POSTS_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
     yield put({
       type: LOAD_POSTS_FAILURE,
+      error: err.response.data,
+    });
+  }
+}
+
+function loadPostAPI(data: number) {
+  return axios.get(`/post/${data}`);
+}
+
+function* loadPost(action: AnyAction): object {
+  try {
+    const result = yield call(loadPostAPI, action.data);
+    yield put({
+      type: LOAD_POST_SUCCESS,
+      data: result.data,
+    });
+  } catch (err: any) {
+    yield put({
+      type: LOAD_POST_FAILURE,
       error: err.response.data,
     });
   }
@@ -145,9 +161,9 @@ function* addPost(action: AnyAction): object {
       type: ADD_POST_TO_ME,
       data: result.data.id,
     });
-  } catch (err) {
+  } catch (err: any) {
     //put = action 을 dispatch
-    console.error(err);
+
     yield put({
       type: ADD_POST_FAILURE,
       error: err.response.data,
@@ -166,9 +182,9 @@ function* addComment(action: AnyAction): object {
       type: ADD_COMMENT_SUCCESS,
       data: result.data,
     });
-  } catch (err) {
+  } catch (err: any) {
     //put = action 을 dispatch
-    console.error(err);
+
     yield put({
       type: ADD_COMMENT_FAILURE,
       error: err.response.data,
@@ -191,8 +207,7 @@ function* removePost(action: AnyAction): object {
       type: REMOVE_POST_OF_ME,
       data: action.data,
     });
-  } catch (err) {
-    console.error(err);
+  } catch (err: any) {
     yield put({
       type: REMOVE_POST_FAILURE,
       error: err.response.data,
@@ -210,6 +225,10 @@ function* watchUnlikePost() {
 
 function* watchLoadPosts() {
   yield throttle(5000, LOAD_POSTS_REQUEST, loadPosts);
+}
+
+function* watchLoadPost() {
+  yield takeLatest(LOAD_POST_REQUEST, loadPost);
 }
 
 function* watchAddPost() {
@@ -240,5 +259,6 @@ export default function* postSaga() {
     fork(watchAddComment),
     fork(watchRemovePost),
     fork(watchRetweet),
+    fork(watchLoadPost),
   ]);
 }
