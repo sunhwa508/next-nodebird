@@ -1,4 +1,4 @@
-import Document, { Html, Head, DocumentContext } from "next/document";
+import Document, { Html, Head, Main, DocumentContext, NextScript } from "next/document";
 import { ServerStyleSheet } from "styled-components";
 
 class MyDocument extends Document {
@@ -30,7 +30,12 @@ class MyDocument extends Document {
     return (
       <Html>
         <Head></Head>
-        <body></body>
+        <body>
+          <Main />
+          {/* ie 에서도 돌아갈 수 있도록 polyfill을 설정해준다. */}
+          <script src="https://polyfill.io/v3/polyfill.min.js?features=default%2Ces2015%2Ces2016%2Ces2018%2Ces2017%2Ces2019" />
+          <NextScript />
+        </body>
       </Html>
     );
   }
