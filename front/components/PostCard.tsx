@@ -30,7 +30,7 @@ const PostCard = ({ post }: InitialPostElementProps) => {
     if (!id) {
       return alert("로그인이 필요합니다.");
     }
-    dispatch({
+    dispatch({  
       type: UNLIKE_POST_REQUEST,
       data: post.id,
     });

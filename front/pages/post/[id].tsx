@@ -1,8 +1,8 @@
 // post/[id].ts
 import { END } from "@redux-saga/core";
 import axios from "axios";
+import Head from "next/head";
 import { useRouter } from "next/router";
-import { ParsedUrlQuery } from "querystring";
 import React from "react";
 import { useSelector } from "react-redux";
 import AppLayout from "../../components/AppLayout";
@@ -20,14 +20,20 @@ const Post = () => {
 
   return (
     <AppLayout>
+      <Head>
+        {singlePost.User.nickname}님의 글{/* og : 공유하기 했을때 카드형태에 들어갈 컨텐츠들  */}
+        <meta name="description" content={singlePost.content} />
+        <meta property="og:title" content={`${singlePost.User.nickname}님의 게시글`} />
+        <meta property="og:description" content={singlePost.content} />
+        <meta property="og:image" content={singlePost.Images[0] ? singlePost.Images[0].src : "https://nodebird.com/favicon.ico"} />
+        <meta property="og:url" content={`https://nodebird.com/post/${id}`} />
+      </Head>
       <PostCard post={singlePost} />
-      {/* <div>{id}번게시글</div> */}
     </AppLayout>
   );
 };
 
 export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, params }): Promise<any> => {
-  console.log(params);
   const cookie = req ? req.headers.cookie : "";
   axios.defaults.headers.Cookie = "";
   if (req && cookie) {
