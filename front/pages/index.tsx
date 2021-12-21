@@ -6,8 +6,8 @@ import PostCard from "../components/PostCard";
 import { useEffect } from "react";
 import { LOAD_POSTS_REQUEST } from "../reducers/post";
 import { LOAD_MY_INFO_REQUEST } from "../reducers/user";
-import wrapper from '../store/configureStore'
-import { END } from 'redux-saga';
+import wrapper from "../store/configureStore";
+import { END } from "redux-saga";
 import { SagaStore } from "../store/redux";
 import axios from "axios";
 const Home = () => {
@@ -60,20 +60,20 @@ const Home = () => {
 };
 
 //이부분이 Home 컴포넌트 보다 먼저 실행된다.
-export const getServerSideProps  = wrapper.getServerSideProps((store) => async ({ req }):Promise<any> => {
- const cookie = req ? req.headers.cookie : '';
- axios.defaults.headers.Cookie = '';
- if(req && cookie){
-   axios.defaults.headers.Cookie = cookie;
- }
- store.dispatch({
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req }): Promise<any> => {
+  const cookie = req ? req.headers.cookie : "";
+  axios.defaults.headers.Cookie = "";
+  if (req && cookie) {
+    axios.defaults.headers.Cookie = cookie;
+  }
+  store.dispatch({
     type: LOAD_MY_INFO_REQUEST,
   });
- store.dispatch({
+  store.dispatch({
     type: LOAD_POSTS_REQUEST,
   });
- store.dispatch(END)
-  await ( store as SagaStore).sagaTask.toPromise();
-})
+  store.dispatch(END);
+  await (store as SagaStore).sagaTask.toPromise();
+});
 
 export default Home;

@@ -1,4 +1,4 @@
-import { useEffect, useState, useCallback } from "react";
+import { useState, useCallback } from "react";
 import { EllipsisOutlined, MessageOutlined, RetweetOutlined, HeartTwoTone } from "@ant-design/icons";
 import { Card, Popover, Button, List, Comment } from "antd";
 import Avatar from "antd/lib/avatar/avatar";
@@ -30,7 +30,7 @@ const PostCard = ({ post }: InitialPostElementProps) => {
     if (!id) {
       return alert("로그인이 필요합니다.");
     }
-    dispatch({  
+    dispatch({
       type: UNLIKE_POST_REQUEST,
       data: post.id,
     });
@@ -68,11 +68,7 @@ const PostCard = ({ post }: InitialPostElementProps) => {
         cover={post.Images[0] && <PostImages images={post.Images} />}
         actions={[
           <RetweetOutlined key="retweet" onClick={onRetweet} />,
-          liked ? (
-            <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onUnLike} />
-          ) : (
-            <HeartTwoTone key="heart" onClick={onLike} />
-          ),
+          liked ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onUnLike} /> : <HeartTwoTone key="heart" onClick={onLike} />,
           <MessageOutlined key="comment" onClick={onToggleComment} />,
           <Popover
             key="more"
@@ -122,11 +118,7 @@ const PostCard = ({ post }: InitialPostElementProps) => {
             dataSource={post.Comments}
             renderItem={(item: CommentsProps) => (
               <li>
-                <Comment
-                  author={item.User.nickname}
-                  content={item.content}
-                  avatar={<Avatar>{item.User.nickname[0]}</Avatar>}
-                ></Comment>
+                <Comment author={item.User.nickname} content={item.content} avatar={<Avatar>{item.User.nickname[0]}</Avatar>}></Comment>
               </li>
             )}
           />

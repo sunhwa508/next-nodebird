@@ -1,5 +1,4 @@
 const express = require("express");
-
 const { Post, User, Image, Comment, Hashtag } = require("../models");
 const { isLoggedIn } = require("./middlewares");
 const multer = require("multer");
