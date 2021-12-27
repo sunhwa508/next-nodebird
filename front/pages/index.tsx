@@ -10,6 +10,7 @@ import wrapper from "../store/configureStore";
 import { END } from "redux-saga";
 import { SagaStore } from "../store/redux";
 import axios from "axios";
+import shortid from "shortid";
 const Home = () => {
   const { me } = useSelector((state: rootType) => state.user);
   const { mainPosts, hasMorePosts, loadPostsLoading, retweetError } = useSelector((state: rootType) => state.post);
@@ -53,7 +54,7 @@ const Home = () => {
     <AppLayout>
       {me && <PostForm />}
       {mainPosts.map((post: any) => (
-        <PostCard key={post.id} post={post} />
+        <PostCard key={shortid.generate()} post={post} />
       ))}
     </AppLayout>
   );

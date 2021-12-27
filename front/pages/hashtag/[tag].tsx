@@ -15,6 +15,7 @@ import PostCard from "../../components/PostCard";
 import wrapper from "../../store/configureStore";
 import AppLayout from "../../components/AppLayout";
 import { rootType } from "../../reducers";
+import shortid from "shortid";
 
 const Hashtag = () => {
   const dispatch = useDispatch();
@@ -76,7 +77,7 @@ const Hashtag = () => {
         </Card>
       ) : null}
       {mainPosts.map(c => (
-        <PostCard key={c.id} post={c} />
+        <PostCard key={shortid.generate()} post={c} />
       ))}
       <div ref={hasMorePosts && !loadPostsLoading ? ref : undefined} />
     </AppLayout>

@@ -24,7 +24,7 @@ const FollowButton = ({ post }: InitialPostElementProps) => {
     }
   }, [isFollowing]);
 
-  if (post.User.id === me.id) {
+  if (post?.User?.id === me.id) {
     return null;
   }
   return (

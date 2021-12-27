@@ -11,7 +11,7 @@ router.get("/:hashtag", async (req, res, next) => {
     const posts = await Post.findAll({
       where,
       limit: 10,
-      order: [[["createdAt", "DESC"]]],
+      order: [["createdAt", "DESC"]],
       include: [
         {
           model: Hashtag,

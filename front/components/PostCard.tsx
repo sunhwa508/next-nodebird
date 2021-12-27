@@ -65,7 +65,7 @@ const PostCard = ({ post }: InitialPostElementProps) => {
   return (
     <div>
       <Card
-        cover={post.Images[0] && <PostImages images={post.Images} />}
+        cover={post.Images[0] && <PostImages images={post.Images[0]} />}
         actions={[
           <RetweetOutlined key="retweet" onClick={onRetweet} />,
           liked ? <HeartTwoTone twoToneColor="#eb2f96" key="heart" onClick={onUnLike} /> : <HeartTwoTone key="heart" onClick={onLike} />,
@@ -74,7 +74,7 @@ const PostCard = ({ post }: InitialPostElementProps) => {
             key="more"
             content={
               <Button.Group>
-                {id && post.User.id === id ? (
+                {id && post?.User?.id === id ? (
                   <>
                     <Button>수정</Button>
                     <Button type="ghost" loading={removePostLoading} onClick={onRemovePost}>
@@ -103,8 +103,8 @@ const PostCard = ({ post }: InitialPostElementProps) => {
           </Card>
         ) : (
           <Card.Meta
-            avatar={<Avatar>{post.User.nickname[0]}</Avatar>}
-            title={post.User.nickname}
+            avatar={<Avatar>{post?.User?.nickname[0]}</Avatar>}
+            title={post?.User?.nickname}
             description={<PostCardContent postData={post.content} />}
           />
         )}
