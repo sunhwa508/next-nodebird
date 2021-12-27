@@ -226,7 +226,6 @@ function* addComment(action: AnyAction): object {
     });
   } catch (err: any) {
     //put = action 을 dispatch
-
     yield put({
       type: ADD_COMMENT_FAILURE,
       error: err.response.data,
@@ -276,6 +275,7 @@ function* watchLoadPost() {
 function* watchLoadUserPosts() {
   yield takeLatest(LOAD_USER_POSTS_REQUEST, loadUserPosts);
 }
+
 function* watchLoadHashtagPosts() {
   yield takeLatest(LOAD_USER_POSTS_REQUEST, loadHashtagPosts);
 }

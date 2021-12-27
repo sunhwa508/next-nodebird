@@ -4,10 +4,9 @@ import { Avatar, Card } from "antd";
 import { END } from "redux-saga";
 import Head from "next/head";
 import { useRouter } from "next/router";
-import { useInView } from "react-intersection-observer";
 
 import axios from "axios";
-import { LOAD_POSTS_REQUEST, LOAD_USER_POSTS_REQUEST } from "../../reducers/post";
+import { LOAD_USER_POSTS_REQUEST } from "../../reducers/post";
 import { LOAD_MY_INFO_REQUEST, LOAD_USER_REQUEST } from "../../reducers/user";
 import PostCard from "../../components/PostCard";
 import wrapper from "../../store/configureStore";
@@ -21,18 +20,23 @@ const User = () => {
   const { mainPosts, hasMorePosts, loadPostsLoading } = useSelector((state: rootType) => state.post);
   const { userInfo, me } = useSelector((state: rootType) => state.user);
 
-  const [ref, inView] = useInView();
-
   useEffect(() => {
-    if (inView && hasMorePosts && !loadPostsLoading) {
-      const lastId = mainPosts[mainPosts.length - 1]?.id;
-      dispatch({
-        type: LOAD_POSTS_REQUEST,
-        lastId,
-        data: id,
-      });
-    }
-  }, [inView, hasMorePosts, loadPostsLoading, mainPosts, id]);
+    const onScroll = () => {
+      if (window.pageYOffset + document.documentElement.clientHeight > document.documentElement.scrollHeight - 300) {
+        if (hasMorePosts && !loadPostsLoading) {
+          dispatch({
+            type: LOAD_USER_POSTS_REQUEST,
+            lastId: mainPosts[mainPosts.length - 1] && mainPosts[mainPosts.length - 1].id,
+            data: id,
+          });
+        }
+      }
+    };
+    window.addEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [mainPosts.length, hasMorePosts, id, loadPostsLoading]);
 
   return (
     <AppLayout>
@@ -76,7 +80,6 @@ const User = () => {
       {mainPosts.map(c => (
         <PostCard key={c.id} post={c} />
       ))}
-      <div ref={hasMorePosts && !loadPostsLoading ? ref : undefined} />
     </AppLayout>
   );
 };

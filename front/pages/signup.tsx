@@ -103,13 +103,7 @@ const Signup = () => {
         <div>
           <label htmlFor="user-password-check">비밀번호체크</label>
           <br />
-          <Input
-            name="user-password-check"
-            type="password"
-            value={passwordCheck}
-            onChange={onChangePasswordCheck}
-            required
-          />
+          <Input name="user-password-check" type="password" value={passwordCheck} onChange={onChangePasswordCheck} required />
           {passwordError && <ErrorMessage> 비밀번호가 일치하지 않습니다.</ErrorMessage>}
         </div>
         <div>
