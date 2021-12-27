@@ -170,7 +170,7 @@ function* loadUserPosts(action: AnyAction): object {
 }
 
 function loadHashtagPostsAPI(data: number, lastId: number) {
-  return axios.get(`/hashtag/${data}?lastId=${lastId || 0}`);
+  return axios.get(`/hashtag/${encodeURIComponent(data)}?lastId=${lastId || 0}`);
 }
 
 function* loadHashtagPosts(action: AnyAction): object {

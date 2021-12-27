@@ -9,8 +9,8 @@ import { useRouter } from "next/router";
 import { useInView } from "react-intersection-observer";
 
 import axios from "axios";
-import { LOAD_POSTS_REQUEST, LOAD_USER_POSTS_REQUEST } from "../../reducers/post";
-import { LOAD_MY_INFO_REQUEST, LOAD_USER_REQUEST } from "../../reducers/user";
+import { LOAD_HASHTAG_POSTS_REQUEST, LOAD_POSTS_REQUEST } from "../../reducers/post";
+import { LOAD_MY_INFO_REQUEST } from "../../reducers/user";
 import PostCard from "../../components/PostCard";
 import wrapper from "../../store/configureStore";
 import AppLayout from "../../components/AppLayout";
@@ -32,10 +32,10 @@ const Hashtag = () => {
       dispatch({
         type: LOAD_POSTS_REQUEST,
         lastId,
-        data: id,
+        data: tag,
       });
     }
-  }, [inView, hasMorePosts, loadPostsLoading, mainPosts, id]);
+  }, [inView, hasMorePosts, loadPostsLoading, mainPosts]);
 
   return (
     <AppLayout>
@@ -49,7 +49,7 @@ const Hashtag = () => {
           <meta property="og:title" content={`${userInfo.nickname}님의 게시글`} />
           <meta property="og:description" content={`${userInfo.nickname}님의 게시글`} />
           <meta property="og:image" content="https://nodebird.com/favicon.ico" />
-          <meta property="og:url" content={`https://nodebird.com/user/${id}`} />
+          <meta property="og:url" content={`https://nodebird.com/user/${tag}`} />
         </Head>
       )}
       {userInfo && userInfo.id !== me?.id ? (
@@ -84,25 +84,21 @@ const Hashtag = () => {
   );
 };
 
-export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, params }) => {
+export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, params }): Promise<any> => {
   const cookie = req ? req.headers.cookie : "";
   axios.defaults.headers.Cookie = "";
   if (req && cookie) {
     axios.defaults.headers.Cookie = cookie;
   }
   store.dispatch({
-    type: LOAD_USER_POSTS_REQUEST,
-    data: params.id,
-  });
-  store.dispatch({
     type: LOAD_MY_INFO_REQUEST,
   });
   store.dispatch({
-    type: LOAD_USER_REQUEST,
-    data: params.id,
+    type: LOAD_HASHTAG_POSTS_REQUEST,
+    data: params?.tag,
   });
   store.dispatch(END);
-  await store.sagaTask.toPromise();
+  await store?.sagaTask?.toPromise();
 });
 
 export default Hashtag;
