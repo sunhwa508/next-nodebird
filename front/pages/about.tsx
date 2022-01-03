@@ -2,22 +2,21 @@ import { Card, Avatar } from "antd";
 import { useSelector } from "react-redux";
 import { LOAD_USER_REQUEST } from "../reducers/user";
 import { rootType } from "../reducers";
-import Head from 'next/head';
+import Head from "next/head";
 import { END } from "redux-saga";
 import wrapper from "../store/configureStore";
 import { SagaStore } from "../store/redux";
-import AppLayout from '../components/AppLayout';
+import AppLayout from "../components/AppLayout";
 
 const About = () => {
   const { userInfo } = useSelector((state: rootType) => state.user);
 
   return (
     <AppLayout>
-    <Head>
-      <title>ZeroCho | NodeBird</title>
-    </Head>
-    {userInfo
-      ? (
+      <Head>
+        <title>ZeroCho | NodeBird</title>
+      </Head>
+      {userInfo ? (
         <Card
           actions={[
             <div key="twit">
@@ -37,27 +36,21 @@ const About = () => {
             </div>,
           ]}
         >
-          <Card.Meta
-            avatar={<Avatar>{userInfo.nickname[0]}</Avatar>}
-            title={userInfo.nickname}
-            description="노드버드 매니아"
-          />
+          <Card.Meta avatar={<Avatar>{userInfo.nickname[0]}</Avatar>} title={userInfo.nickname} description="노드버드 매니아" />
         </Card>
-      )
-      : null}
-  </AppLayout>
+      ) : null}
+    </AppLayout>
   );
 };
 
-
-export const getStaticProps  = wrapper.getStaticProps((store) => async ({ req }):Promise<any> => {
+export const getStaticProps = wrapper.getStaticProps(store => async (): Promise<any> => {
   store.dispatch({
     type: LOAD_USER_REQUEST,
     data: 1,
   });
 
   store.dispatch(END);
-  await ( store as SagaStore).sagaTask.toPromise();
- });
+  await (store as SagaStore).sagaTask.toPromise();
+});
 
 export default About;

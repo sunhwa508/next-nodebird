@@ -17,6 +17,7 @@
     "antd": "^4.16.6",
     "axios": "^0.21.1",
     "babel-plugin-styled-components": "^2.0.2",
+    "dayjs": "^1.10.7",
     "faker": "^5.5.3",
     "immer": "^9.0.5",
     "next": "^10.2.3",

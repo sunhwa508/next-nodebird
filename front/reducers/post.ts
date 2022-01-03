@@ -24,6 +24,7 @@ export interface InitialPostElementProps {
     Likers: Array<{ id: number }>;
     RetweetId: number;
     Retweet: any;
+    createdAt: Date;
   };
 }
 

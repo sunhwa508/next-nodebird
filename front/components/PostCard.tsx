@@ -11,6 +11,9 @@ import PostCardContent from "./PostCardContent";
 import FollowButton from "./FollowButton";
 import { LIKE_POST_REQUEST, UNLIKE_POST_REQUEST } from "../reducers/post";
 import Link from "next/link";
+import dayjs from "dayjs";
+
+dayjs.locale("ko");
 
 const PostCard = ({ post }: InitialPostElementProps) => {
   const { removePostLoading } = useSelector((state: rootType) => state.post);
@@ -97,6 +100,7 @@ const PostCard = ({ post }: InitialPostElementProps) => {
       >
         {post.RetweetId && post.Retweet ? (
           <Card cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />}>
+            <div style={{ float: "right" }}>{dayjs(post.createdAt).format("YYYY.MM.DD")}</div>
             <Card.Meta
               avatar={
                 <Link href={`/user/${post.Retweet.User.id}`}>
@@ -110,11 +114,14 @@ const PostCard = ({ post }: InitialPostElementProps) => {
             />
           </Card>
         ) : (
-          <Card.Meta
-            avatar={<Avatar>{post?.User?.nickname[0]}</Avatar>}
-            title={post?.User?.nickname}
-            description={<PostCardContent postData={post.content} />}
-          />
+          <>
+            <div style={{ float: "right" }}>{dayjs(post.createdAt).format("YYYY.MM.DD")}</div>
+            <Card.Meta
+              avatar={<Avatar>{post?.User?.nickname[0]}</Avatar>}
+              title={post?.User?.nickname}
+              description={<PostCardContent postData={post.content} />}
+            />
+          </>
         )}
       </Card>
       {commentFormOpened && (
