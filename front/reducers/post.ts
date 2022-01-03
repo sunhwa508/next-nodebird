@@ -63,6 +63,7 @@ export interface InitialPostProps {
 
 export interface CommentsProps {
   User: {
+    id: string;
     nickname: string;
   };
   content: string;

@@ -188,11 +188,12 @@ function* loadHashtagPosts(action: AnyAction): object {
   }
 }
 
-function addPostAPI(data: AxiosRequestConfig | undefined) {
+function addPostAPI(data: AxiosRequestConfig) {
   return axios.post("/post", data);
 }
 
 function* addPost(action: AnyAction): object {
+  console.log("action", action);
   try {
     const result = yield call(addPostAPI, action.data);
     yield put({
@@ -205,7 +206,6 @@ function* addPost(action: AnyAction): object {
     });
   } catch (err: any) {
     //put = action 을 dispatch
-
     yield put({
       type: ADD_POST_FAILURE,
       error: err.response.data,

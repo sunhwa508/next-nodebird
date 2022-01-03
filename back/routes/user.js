@@ -129,46 +129,6 @@ router.patch("/nickname", isLoggedIn, async (req, res, next) => {
   }
 });
 
-router.get("/:id", async (req, res, next) => {
-  // GET /user/3
-  try {
-    const fullUserWithoutPassword = await User.findOne({
-      where: { id: req.params.id },
-      attributes: {
-        exclude: ["password"],
-      },
-      include: [
-        {
-          model: Post,
-          attributes: ["id"],
-        },
-        {
-          model: User,
-          as: "Followings",
-          attributes: ["id"],
-        },
-        {
-          model: User,
-          as: "Followers",
-          attributes: ["id"],
-        },
-      ],
-    });
-    if (fullUserWithoutPassword) {
-      const data = fullUserWithoutPassword.toJSON();
-      data.Posts = data.Posts.length;
-      data.Followings = data.Followings.length;
-      data.Followers = data.Followers.length;
-      res.status(200).json(data);
-    } else {
-      res.status(404).json("존재하지 않는 사용자입니다.");
-    }
-  } catch (error) {
-    console.error(error);
-    next(error);
-  }
-});
-
 router.get("/:userId/posts", async (req, res, next) => {
   // GET /user/1/posts
   try {
@@ -251,13 +211,14 @@ router.delete("/:userId/follow", isLoggedIn, async (req, res, next) => {
   }
 });
 
+//req, res, next 는 모두 미들웨어로 왼쪽에서 오른쪽 위에서 아래로 실행 된다.
 router.get("/followers", isLoggedIn, async (req, res, next) => {
   try {
     const user = await User.findOne({ where: { id: req.user.id } });
     if (!user) {
       res.status(403).send("없는 사람을 팔로우하려고 하시네요..");
     }
-    const followers = await user.getFollowers(req.user.id);
+    const followers = await user.getFollowers({ limit: parseInt(req.query.limit, 10) });
     res.status(200).json(followers);
   } catch (error) {
     console.error(error);
@@ -271,8 +232,49 @@ router.get("/followings", isLoggedIn, async (req, res, next) => {
     if (!user) {
       res.status(403).send("없는 사람을 찾으려고 하시네요..");
     }
-    const followerings = await user.getFollowerings(req.user.id);
+    const followerings = await user.getFollowerings({ limit: parseInt(req.query.limit, 10) });
     res.status(200).json(followerings);
+  } catch (error) {
+    console.error(error);
+    next(error);
+  }
+});
+
+// /followers, /folloings 로 걸릴수 있는 params는 가장 아래로 옮긴다.
+router.get("/:userId", async (req, res, next) => {
+  // GET /user/3
+  try {
+    const fullUserWithoutPassword = await User.findOne({
+      where: { id: req.params.id },
+      attributes: {
+        exclude: ["password"],
+      },
+      include: [
+        {
+          model: Post,
+          attributes: ["id"],
+        },
+        {
+          model: User,
+          as: "Followings",
+          attributes: ["id"],
+        },
+        {
+          model: User,
+          as: "Followers",
+          attributes: ["id"],
+        },
+      ],
+    });
+    if (fullUserWithoutPassword) {
+      const data = fullUserWithoutPassword.toJSON();
+      data.Posts = data.Posts.length;
+      data.Followings = data.Followings.length;
+      data.Followers = data.Followers.length;
+      res.status(200).json(data);
+    } else {
+      res.status(404).json("존재하지 않는 사용자입니다.");
+    }
   } catch (error) {
     console.error(error);
     next(error);

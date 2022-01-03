@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import Link from "next/link";
 import { Menu, Input, Row, Col } from "antd";
 import UserProfile from "./UserProfile";
@@ -6,7 +6,8 @@ import LoginForm from "./LoginForm";
 import styled, { createGlobalStyle } from "styled-components";
 import { useSelector } from "react-redux";
 import { rootType } from "../reducers";
-
+import useInput from "../hooks/useInput";
+import Router from "next/router";
 const SearchInput = styled(Input.Search)`
   vertical-align: middle;
 `;
@@ -28,7 +29,12 @@ const Global = createGlobalStyle`
 `;
 
 const AppLayout = ({ children }: Props) => {
+  const [searchInput, onChangeSearchInput] = useInput("");
   const { me } = useSelector((state: rootType) => state.user);
+
+  const onSearch = useCallback(() => {
+    Router.push(`/hashtag/${searchInput}`);
+  }, [searchInput]);
 
   return (
     <div>
@@ -45,7 +51,7 @@ const AppLayout = ({ children }: Props) => {
           </Link>
         </Menu.Item>
         <Menu.Item key="3">
-          <SearchInput enterButton />
+          <SearchInput enterButton value={searchInput} onChange={onChangeSearchInput} onSearch={onSearch} />
         </Menu.Item>
         <Menu.Item key="4">
           <Link href="/signup">
@@ -63,7 +69,6 @@ const AppLayout = ({ children }: Props) => {
         </Col>
         <Col xs={24} md={6}>
           <a href="" target="_blank" rel="noreferrer noopener">
-            {" "}
             Made by sunhwalee{" "}
           </a>
         </Col>

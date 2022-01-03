@@ -10,6 +10,8 @@ import CommentForm from "./CommentForm";
 import PostCardContent from "./PostCardContent";
 import FollowButton from "./FollowButton";
 import { LIKE_POST_REQUEST, UNLIKE_POST_REQUEST } from "../reducers/post";
+import Link from "next/link";
+
 const PostCard = ({ post }: InitialPostElementProps) => {
   const { removePostLoading } = useSelector((state: rootType) => state.post);
   const [commentFormOpened, setCommentFormOpened] = useState(false);
@@ -96,7 +98,13 @@ const PostCard = ({ post }: InitialPostElementProps) => {
         {post.RetweetId && post.Retweet ? (
           <Card cover={post.Retweet.Images[0] && <PostImages images={post.Retweet.Images} />}>
             <Card.Meta
-              avatar={<Avatar>{post.Retweet.User.nickname[0]}</Avatar>}
+              avatar={
+                <Link href={`/user/${post.Retweet.User.id}`}>
+                  <a>
+                    <Avatar>{post.Retweet.User.nickname[0]}</Avatar>
+                  </a>
+                </Link>
+              }
               title={post.Retweet.User.nickname}
               description={<PostCardContent postData={post.Retweet.content} />}
             />
@@ -118,7 +126,17 @@ const PostCard = ({ post }: InitialPostElementProps) => {
             dataSource={post.Comments}
             renderItem={(item: CommentsProps) => (
               <li>
-                <Comment author={item.User.nickname} content={item.content} avatar={<Avatar>{item.User.nickname[0]}</Avatar>}></Comment>
+                <Comment
+                  author={item.User.nickname}
+                  content={item.content}
+                  avatar={
+                    <Link href={`/user/${item.User.id}`}>
+                      <a>
+                        <Avatar>{item.User.nickname[0]}</Avatar>
+                      </a>
+                    </Link>
+                  }
+                ></Comment>
               </li>
             )}
           />
