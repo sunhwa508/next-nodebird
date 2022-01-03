@@ -85,7 +85,14 @@ const User = () => {
   );
 };
 
-export const getServerSideProps = wrapper.getServerSideProps(store => async ({ req, params }): Promise<any> => {
+export async function getStaticPaths() {
+  return {
+    paths: [{ params: { id: "1" } }, { params: { id: "2" } }, { params: { id: "3" } }],
+    fallback: false,
+  };
+}
+
+export const getStaticProps = wrapper.getServerSideProps(store => async ({ req, params }): Promise<any> => {
   const cookie = req ? req.headers.cookie : "";
   axios.defaults.headers.Cookie = "";
   if (req && cookie) {
